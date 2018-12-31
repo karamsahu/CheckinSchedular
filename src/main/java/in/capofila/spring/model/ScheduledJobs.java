@@ -25,4 +25,12 @@ public class ScheduledJobs {
 	public void setScheduledTime(String scheduledTime) {
 		this.scheduledTime = scheduledTime;
 	}
+	@Override
+	public String toString() {
+		return "ScheduledJobs [jobName=" + jobName + ", jobGroup=" + jobGroup + ", scheduledTime=" + scheduledTime
+				+ ", getJobName()=" + getJobName() + ", getJobGroup()=" + getJobGroup() + ", getScheduledTime()="
+				+ getScheduledTime() + ", getClass()=" + getClass() + ", hashCode()=" + hashCode() + ", toString()="
+				+ super.toString() + "]";
+	}
+	
 }

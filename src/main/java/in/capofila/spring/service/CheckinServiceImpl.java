@@ -8,10 +8,8 @@ import java.util.TimeZone;
 
 import org.quartz.CronExpression;
 import org.quartz.CronScheduleBuilder;
-import org.quartz.Job;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
-import org.quartz.JobExecutionContext;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
@@ -91,10 +89,11 @@ public class CheckinServiceImpl implements CheckinService {
 		return false;
 	}
 
-	public boolean cancellJob(JobKey jobName) {
+	public boolean cancellJob(String jobName) {
 		boolean status;
 		try {
-			status = sched.deleteJob(jobName);
+			JobKey key = JobKey.jobKey(jobName);
+			status = sched.deleteJob(key);
 		} catch (SchedulerException e) {
 			e.printStackTrace();
 			return false;
@@ -116,6 +115,7 @@ public class CheckinServiceImpl implements CheckinService {
 					jobs.setJobName(jobName);
 					jobs.setJobGroup(jobGroup);
 					jobs.setScheduledTime(scheduledTime.toString());
+					schdJobsList.add(jobs);
 					//System.out.println("[jobName] : " + jobName + " [groupName] : " + jobGroup + " - " + nextFireTime);
 				}
 			}

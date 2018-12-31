@@ -6,10 +6,26 @@ public class CheckinDetails {
 	private String lastName;
 	private final String application = "air-check-in";
 	private String site = "southwest"; 
+	private String jobName;
+	private Boolean jobStatus;
 	
 	private String dateOfMonth,month,yyyy,timeZone,ampm,email, hh, mm, ss;
 		
+	public void setJobStatus(Boolean jobStatus) {
+		this.jobStatus = jobStatus;
+	}
 	
+	public Boolean getJobStatus() {
+		return jobStatus;
+	}
+	
+	public String getJobName() {
+		return jobName;
+	}
+	
+	public void setJobName(String jobName) {
+		this.jobName = jobName;
+	}
 	public String getHh() {
 		return hh;
 	}
@@ -95,13 +111,17 @@ public class CheckinDetails {
 	public String getApplication() {
 		return application;
 	}
+
 	@Override
 	public String toString() {
 		return "CheckinDetails [confirmationNumber=" + confirmationNumber + ", firstName=" + firstName + ", lastName="
-				+ lastName + ", application=" + application + ", site=" + site + ", month=" + month
-				+ ", yyyy=" + yyyy + ", dateOfMonth=" + dateOfMonth + ", timeZone=" + timeZone
-				+ ", ampm=" + ampm + ", email=" + email + ", hh=" + hh + ", mm=" + mm + ", ss=" + ss + "]";
+				+ lastName + ", application=" + application + ", site=" + site + ", jobName=" + jobName + ", jobStatus="
+				+ jobStatus + ", dateOfMonth=" + dateOfMonth + ", month=" + month + ", yyyy=" + yyyy + ", timeZone="
+				+ timeZone + ", ampm=" + ampm + ", email=" + email + ", hh=" + hh + ", mm=" + mm + ", ss=" + ss + "]";
 	}
+	
+
+	
 	
 	
 }

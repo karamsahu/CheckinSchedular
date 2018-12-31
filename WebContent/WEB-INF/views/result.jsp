@@ -95,15 +95,22 @@ table.paleBlueRows tfoot td {
 					</tr>
 				</tfoot>
 				<tbody>
-					<tr>
-						<td>${checkinDetails.getConfirmationNumber()}</td>
-						<td>${checkinDetails.getFirstName()} ${checkinDetails.getLastName()}</td>
-						<td>${checkinDetails.getMonth()}/${checkinDetails.getDateOfMonth()}/${checkinDetails.getYyyy()} ${checkinDetails.getTimeZone()}</td>
-						<td>${checkinDetails.getHh()}:${checkinDetails.getMm()}:${checkinDetails.getSs()} ${checkinDetails.getAmpm()}</td>
-						<td>${checkinDetails.getEmail() }
-						<td>Runing</td>
-					</tr>
-					
+					<c:if test="${not empty lists}">
+
+						<tr>
+							<c:forEach var="checkinservice" items="${lists}">
+								<td>${checkinDetails.getConfirmationNumber()}</td>
+								<td>${checkinDetails.getFirstName()}
+									${checkinDetails.getLastName()}</td>
+								<td>${checkinDetails.getMonth()}/${checkinDetails.getDateOfMonth()}/${checkinDetails.getYyyy()}
+									${checkinDetails.getTimeZone()}</td>
+								<td>${checkinDetails.getHh()}:${checkinDetails.getMm()}:${checkinDetails.getSs()}</td>
+								<td>${checkinDetails.getEmail() }</td>
+								<td>${checkinDetails.getJobStatus() }</td>
+							</c:forEach>
+						</tr>
+
+					</c:if>
 				</tbody>
 			</table>
 		</div>
