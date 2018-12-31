@@ -18,7 +18,7 @@
 table.paleBlueRows {
 	font-family: "Times New Roman", Times, serif;
 	border: 1px solid #FFFFFF;
-	width: 350px;
+	width: auto;
 	height: 200px;
 	text-align: center;
 	border-collapse: collapse;
@@ -78,8 +78,8 @@ table.paleBlueRows tfoot td {
 					<tr>
 						<th>CONFIRMATION#</th>
 						<th>NAME</th>
-						<th>DATE</th>
-						<th>TIME</th>
+						<th>DATE (MM/DD/YYYY)</th>
+						<th>TIME (HH:MM:SS)</th>
 						<th>EMAIL</th>
 						<th>STATUS</th>
 					</tr>
@@ -98,8 +98,8 @@ table.paleBlueRows tfoot td {
 					<tr>
 						<td>${checkinDetails.getConfirmationNumber()}</td>
 						<td>${checkinDetails.getFirstName()} ${checkinDetails.getLastName()}</td>
-						<td>${checkinDetails.getMonth()} - ${checkinDetails.getDateOfMonth()} - ${checkinDetails.getYyyy()} ${checkinDetails.getTimeZone()}</td>
-						<td>${checkinDetails.getHh()} : ${checkinDetails.getMm() }:${checkinDetails.getSs()}:${checkinDetails.getAmpm()}</td>
+						<td>${checkinDetails.getMonth()}/${checkinDetails.getDateOfMonth()}/${checkinDetails.getYyyy()} ${checkinDetails.getTimeZone()}</td>
+						<td>${checkinDetails.getHh()}:${checkinDetails.getMm()}:${checkinDetails.getSs()} ${checkinDetails.getAmpm()}</td>
 						<td>${checkinDetails.getEmail() }
 						<td>Runing</td>
 					</tr>

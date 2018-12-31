@@ -32,10 +32,10 @@ public class CheckinServiceImpl implements CheckinService {
 			JobDetail checkinJob = JobBuilder.newJob(CheckInJob.class).withIdentity("checkin", "south-west-boarding")
 					.build();
 
-			// Second -- Minute -- Hour -- DayOfMonth -- Month -- DayOfWeek -- Year
+			// Second -- Minute -- Hour -- DayOfMonth -- Month -- DayOfWeek -- Year +details.getYyyy()
 			CronScheduleBuilder cb = CronScheduleBuilder
 					.cronSchedule(new CronExpression(
-							details.getSs() + " " + details.getMm() + " " + details.getHh() + " ? * * "+details.getYyyy()))
+							details.getSs() + " " + details.getMm() + " " + details.getHh() + " ? * * "))
 					.inTimeZone(TimeZone.getTimeZone(details.getTimeZone()));
 
 			final Trigger trigger = TriggerBuilder.newTrigger().withIdentity("Trigger-checkin").withSchedule(cb)

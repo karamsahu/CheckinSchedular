@@ -16,7 +16,7 @@
 </head>
 <body id="main_body">
 
-	<img id="top" src="top.png" alt="">
+	<img id="top" src="<c:url value="/resources/top.png" />" alt="">
 	<div id="form_container">
 		<h1>
 			<a>Flight Check-in Planner</a>
@@ -56,21 +56,22 @@
 					<h3>Enter Check-in Details</h3>
 					<p></p>
 				</li>
-				<li id="li_5"><label class="description" for="element_5">Date
-				</label> <span> <input id="month" name="month" class="element text"
-						size="2" maxlength="2" value="" type="text"> / <label
-						for="month">MM</label>
-				</span> <span> <input id="dateOfMonth" name="dateOfMonth"
+				<li id="li_5"><label class="description" for="element_5">Check-in
+						Date </label> <span> <input id="element_5_1" name="month"
+						class="element text" size="2" maxlength="2" value="" type="text">
+						/ <label for="month">MM</label>
+				</span> <span> <input id="element_5_2" name="dateOfMonth"
 						class="element text" size="2" maxlength="2" value="" type="text">
 						/ <label for="dateOfMonth">DD</label>
-				</span> <span> <input id="yyyy" name="yyyy" class="element text"
-						size="4" maxlength="4" value="" type="text"> <label
-						for="yyyy">YYYY</label>
-				</span> <span id="calendar_5"> <img id="cal_img_5"
-						class="datepicker" src="calendar.gif" alt="Pick a date.">
+				</span> <span> <input id="element_5_3" name="yyyy"
+						class="element text" size="4" maxlength="4" value="" type="text">
+						<label for="yyyy">YYYY</label>
+				</span> <span id="element_5_calendar_5"> <img id="cal_img_5"
+						class="datepicker" src="<c:url value="/resources/calendar.gif" />"
+						alt="Pick a date.">
 				</span> <script type="text/javascript">
 					Calendar.setup({
-						inputField : "year",
+						inputField : "element_5_3",
 						baseField : "element_5",
 						displayArea : "calendar_5",
 						button : "cal_img_5",
@@ -79,23 +80,170 @@
 					});
 				</script>
 					<p class="guidelines" id="guide_5">
-						<small>Select a day when you want to schedule the checkin.</small>
+						<small>Select a day when you want to schedule the check-in.</small>
 					</p></li>
-				<li id="li_6"><label class="description" for="element_6">Time
-				</label> <span> <input id="hh" name="hh" class="element text "
-						size="2" type="text" maxlength="2" value="" /> : <label>HH</label>
-				</span> <span> <input id="mm" name="mm" class="element text "
-						size="2" type="text" maxlength="2" value="" /> : <label>MM</label>
-				</span> <span> <input id="ss" name="ss" class="element text "
-						size="2" type="text" maxlength="2" value="" /> <label>SS</label>
-				</span> <span> <select class="element select" style="width: 4em"
-						id="ampm" name="ampm">
-							<option value="AM">AM</option>
-							<option value="PM">PM</option>
-					</select> <label>AM/PM</label>
-				</span>
+				<li id="li_6"><label class="description" for="element_6">Check-In Time
+				</label> <span> <select class="element select small" id="hh"
+						name="hh" style="width: 4em">
+							<option value="" selected="selected">HH</option>
+							<option value="00">00</option>
+							<option value="01">01</option>
+							<option value="02">02</option>
+							<option value="03">03</option>
+							<option value="04">04</option>
+							<option value="05">05</option>
+							<option value="06">06</option>
+							<option value="07">07</option>
+							<option value="08">08</option>
+							<option value="09">09</option>
+							<option value="10">10</option>
+							<option value="11">11</option>
+							<option value="12">12</option>
+							<option value="13">13</option>
+							<option value="14">14</option>
+							<option value="15">15</option>
+							<option value="16">16</option>
+							<option value="12">17</option>
+							<option value="18">18</option>
+							<option value="19">19</option>
+							<option value="20">20</option>
+							<option value="21">21</option>
+							<option value="22">22</option>
+							<option value="23">23</option>
+							
+					</select> : <label>HH</label>
+				</span> <span> <select class="element select small" id="mm"
+						name="mm" style="width: 4em">
+							<option value="" selected="selected">MM</option>
+							<option value="00">00</option>
+							<option value="01">01</option>
+							<option value="02">02</option>
+							<option value="03">03</option>
+							<option value="04">04</option>
+							<option value="05">05</option>
+							<option value="06">06</option>
+							<option value="07">07</option>
+							<option value="08">08</option>
+							<option value="09">09</option>
+							<option value="10">10</option>
+							<option value="11">11</option>
+							<option value="12">12</option>
+							<option value="13">13</option>
+							<option value="14">14</option>
+							<option value="15">15</option>
+							<option value="16">16</option>
+							<option value="17">17</option>
+							<option value="18">18</option>
+							<option value="19">19</option>
+							<option value="20">20</option>
+							<option value="21">21</option>
+							<option value="22">22</option>
+							<option value="23">23</option>
+							<option value="24">24</option>
+							<option value="25">25</option>
+							<option value="26">26</option>
+							<option value="27">27</option>
+							<option value="28">28</option>
+							<option value="29">29</option>
+							<option value="30">30</option>
+							<option value="31">31</option>
+							<option value="32">32</option>
+							<option value="33">33</option>
+							<option value="34">34</option>
+							<option value="35">35</option>
+							<option value="36">36</option>
+							<option value="37">37</option>
+							<option value="38">38</option>
+							<option value="39">39</option>
+							<option value="40">40</option>
+							<option value="41">41</option>
+							<option value="42">42</option>
+							<option value="43">43</option>
+							<option value="44">44</option>
+							<option value="45">45</option>
+							<option value="46">46</option>
+							<option value="47">47</option>
+							<option value="48">48</option>
+							<option value="49">49</option>
+							<option value="50">50</option>
+							<option value="51">51</option>
+							<option value="52">52</option>
+							<option value="53">53</option>
+							<option value="54">54</option>
+							<option value="55">55</option>
+							<option value="56">56</option>
+							<option value="57">57</option>
+							<option value="58">58</option>
+							<option value="59">59</option>
+					</select> : <label>MM</label>
+				</span> 
+				
+				<span> <select class="element select medium" id="ss" name="ss" style="width: 4em">
+							<option value="" selected="selected">SS</option>
+							<option value="00">00</option>
+							<option value="01">01</option>
+							<option value="02">02</option>
+							<option value="03">03</option>
+							<option value="04">04</option>
+							<option value="05">05</option>
+							<option value="06">06</option>
+							<option value="07">07</option>
+							<option value="08">08</option>
+							<option value="09">09</option>
+							<option value="10">10</option>
+							<option value="11">11</option>
+							<option value="12">12</option>
+							<option value="13">13</option>
+							<option value="14">14</option>
+							<option value="15">15</option>
+							<option value="16">16</option>
+							<option value="17">17</option>
+							<option value="18">18</option>
+							<option value="19">19</option>
+							<option value="20">20</option>
+							<option value="21">21</option>
+							<option value="22">22</option>
+							<option value="23">23</option>
+							<option value="24">24</option>
+							<option value="25">25</option>
+							<option value="26">26</option>
+							<option value="27">27</option>
+							<option value="28">28</option>
+							<option value="29">29</option>
+							<option value="30">30</option>
+							<option value="31">31</option>
+							<option value="32">32</option>
+							<option value="33">33</option>
+							<option value="34">34</option>
+							<option value="35">35</option>
+							<option value="36">36</option>
+							<option value="37">37</option>
+							<option value="38">38</option>
+							<option value="39">39</option>
+							<option value="40">40</option>
+							<option value="41">41</option>
+							<option value="42">42</option>
+							<option value="43">43</option>
+							<option value="44">44</option>
+							<option value="45">45</option>
+							<option value="46">46</option>
+							<option value="47">47</option>
+							<option value="48">48</option>
+							<option value="49">49</option>
+							<option value="50">50</option>
+							<option value="51">51</option>
+							<option value="52">52</option>
+							<option value="53">53</option>
+							<option value="54">54</option>
+							<option value="55">55</option>
+							<option value="56">56</option>
+							<option value="57">57</option>
+							<option value="58">58</option>
+							<option value="59">59</option>
+					</select> <label>SS</label>
+				</span> 
 					<p class="guidelines" id="guide_6">
-						<small>Select Time when you want to schedule the checkin.</small>
+						<small>Select Time when you want to schedule the check-in.</small>
 					</p></li>
 				<li id="li_8"><label class="description" for="element_8">TIME
 						ZONE </label>
@@ -103,7 +251,7 @@
 						<select class="element select large" id="timeZone" name="timeZone">
 							<option value="EST">Eastern Standard Time (EST)</option>
 							<option value="IST">Indian Standard Time (IST)</option>
-							<option value="" selected="selected">-- Select--</option>
+							<option value="">-- Select--</option>
 
 						</select>
 					</div>
