@@ -15,7 +15,7 @@ public class CheckinDetails implements Serializable{
 	private String jobName;
 	private Boolean jobStatus;
 	
-	private String dateOfMonth,month,yyyy,timeZone,ampm,email, hh, mm, ss;
+	private String dateOfMonth,month,yyyy,timeZone,email, hh, mm, ss;
 		
 	public void setJobStatus(Boolean jobStatus) {
 		this.jobStatus = jobStatus;
@@ -44,12 +44,7 @@ public class CheckinDetails implements Serializable{
 	public void setSs(String ss) {
 		this.ss = ss;
 	}
-	public String getAmpm() {
-		return ampm;
-	}
-	public void setAmpm(String ampm) {
-		this.ampm = ampm;
-	}
+	
 	public String getEmail() {
 		return email;
 	}
@@ -123,7 +118,7 @@ public class CheckinDetails implements Serializable{
 		return "CheckinDetails [confirmationNumber=" + confirmationNumber + ", firstName=" + firstName + ", lastName="
 				+ lastName + ", application=" + application + ", site=" + site + ", jobName=" + jobName + ", jobStatus="
 				+ jobStatus + ", dateOfMonth=" + dateOfMonth + ", month=" + month + ", yyyy=" + yyyy + ", timeZone="
-				+ timeZone + ", ampm=" + ampm + ", email=" + email + ", hh=" + hh + ", mm=" + mm + ", ss=" + ss + "]";
+				+ timeZone + ", email=" + email + ", hh=" + hh + ", mm=" + mm + ", ss=" + ss + "]";
 	}
 	
 

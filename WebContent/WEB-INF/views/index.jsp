@@ -42,7 +42,7 @@
 					for="confirmationNumber">CONFIRMATION # * </label>
 					<div>
 						<input style="text-transform:uppercase" required="ture" id="confirmationNumber" name="confirmationNumber"
-							class="element text medium" type="text" maxlength="6" value="" />
+							class="element text medium" type="text" pattern=".{6,6}" required title="5 to 10 characters" value="" />
 					</div></li>
 				<li id="li_3"><label class="description" for="firstName">FIRST
 						NAME * </label>
