@@ -6,7 +6,37 @@ public class ScheduledJobs {
 	
 	private String jobName;
 	private String jobGroup;
+	private String jobTriggerName;
+	private String jobStatus;
+	private String jobTriggerGroup;
+	
 	private String scheduledTime;
+	
+	public void setJobTriggerGroup(String jobTriggerGroup) {
+		this.jobTriggerGroup = jobTriggerGroup;
+	}
+	
+	public String getJobTriggerGroup() {
+		return jobTriggerGroup;
+	}
+	
+	public void setJobTriggerName(String jobTriggerName) {
+		this.jobTriggerName = jobTriggerName;
+	}
+	
+	public String getJobTriggerName() {
+		return jobTriggerName;
+	}
+	
+	public void setJobStatus(String jobStatus) {
+		this.jobStatus = jobStatus;
+	}
+	
+	public String getJobStatus() {
+		return jobStatus;
+	}
+	private CheckinDetails checkinDetails;
+	
 	public String getJobName() {
 		return jobName;
 	}
@@ -25,12 +55,20 @@ public class ScheduledJobs {
 	public void setScheduledTime(String scheduledTime) {
 		this.scheduledTime = scheduledTime;
 	}
+	
+	public CheckinDetails getCheckinDetails() {
+		return checkinDetails;
+	}
+	public void setCheckinDetails(CheckinDetails checkinDetails) {
+		this.checkinDetails = checkinDetails;
+	}
+
 	@Override
 	public String toString() {
 		return "ScheduledJobs [jobName=" + jobName + ", jobGroup=" + jobGroup + ", scheduledTime=" + scheduledTime
-				+ ", getJobName()=" + getJobName() + ", getJobGroup()=" + getJobGroup() + ", getScheduledTime()="
-				+ getScheduledTime() + ", getClass()=" + getClass() + ", hashCode()=" + hashCode() + ", toString()="
-				+ super.toString() + "]";
+				+ ", jobStatus=" + jobStatus + ", jobTriggerName=" + jobTriggerName + ", jobTriggerGroup="
+				+ jobTriggerGroup + ", checkinDetails=" + checkinDetails + "]";
 	}
+	
 	
 }

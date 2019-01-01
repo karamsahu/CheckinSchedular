@@ -68,47 +68,49 @@ table.paleBlueRows tfoot td {
 </style>
 	<img id="top" src="<c:url value="/resourecs/top.png"/>" alt="">
 	<div id="form_container">
-
 		<h1>
 			<a>Result</a>
 		</h1>
+		<nav> <a href="<c:url value='/schedule/get' />">Refresh</a> <a
+			href="<c:url value='/index' />">Back</a> </nav>
+
 		<div>
 			<table class="paleBlueRows">
 				<thead>
 					<tr>
 						<th>CONFIRMATION#</th>
 						<th>NAME</th>
-						<th>DATE (MM/DD/YYYY)</th>
-						<th>TIME (HH:MM:SS)</th>
+						<th>EXECUTE AT</th>
 						<th>EMAIL</th>
 						<th>STATUS</th>
+						<th>ACTION</th>
 					</tr>
 				</thead>
 				<tfoot>
 					<tr>
-						<td>foot1</td>
-						<td>foot2</td>
-						<td>foot3</td>
-						<td>foot4</td>
-						<td>foot5</td>
-						<td>fppt6</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
 					</tr>
 				</tfoot>
 				<tbody>
 					<c:if test="${not empty lists}">
+						<c:forEach var="jobs" items="${lists}">
+							<tr>
+								<td>${jobs.getCheckinDetails().getConfirmationNumber()}</td>
+								<td>${jobs.getCheckinDetails().getFirstName()}
+									${jobs.getCheckinDetails().getLastName()}</td>
+								<td>${jobs.getScheduledTime() }</td>
+								<td>${jobs.getCheckinDetails().getEmail() }</td>
+								<td>${jobs.getJobStatus() }</td>
+								<td><a href="<c:url value='/schedule/delete/${jobs.getJobName()}/${jobs.getJobGroup()}'/>"><input
+										type="button" value="Delete"></a></td>
+							</tr>
+						</c:forEach>
 
-						<tr>
-							<c:forEach var="checkinservice" items="${lists}">
-								<td>${checkinDetails.getConfirmationNumber()}</td>
-								<td>${checkinDetails.getFirstName()}
-									${checkinDetails.getLastName()}</td>
-								<td>${checkinDetails.getMonth()}/${checkinDetails.getDateOfMonth()}/${checkinDetails.getYyyy()}
-									${checkinDetails.getTimeZone()}</td>
-								<td>${checkinDetails.getHh()}:${checkinDetails.getMm()}:${checkinDetails.getSs()}</td>
-								<td>${checkinDetails.getEmail() }</td>
-								<td>${checkinDetails.getJobStatus() }</td>
-							</c:forEach>
-						</tr>
 
 					</c:if>
 				</tbody>

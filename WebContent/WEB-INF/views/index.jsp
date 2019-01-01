@@ -21,6 +21,10 @@
 		<h1>
 			<a>Flight Check-in Planner</a>
 		</h1>
+		<nav>
+		<a href="<c:url value='#' />">Refresh</a>
+		<a href="<c:url value='/schedule/get' />">Jobs</a>
+		</nav>
 		<form id="form_42612" class="appnitro" method="post" action="schedule">
 			<div class="form_description">
 				<h2>Flight Check-in Planner</h2>
@@ -37,19 +41,19 @@
 				<li id="li_1"><label class="description"
 					for="confirmationNumber">CONFIRMATION # * </label>
 					<div>
-						<input id="confirmationNumber" name="confirmationNumber"
+						<input style="text-transform:uppercase" required="ture" id="confirmationNumber" name="confirmationNumber"
 							class="element text medium" type="text" maxlength="6" value="" />
 					</div></li>
 				<li id="li_3"><label class="description" for="firstName">FIRST
 						NAME * </label>
 					<div>
-						<input id="firstName" name="firstName" class="element text medium"
+						<input required="ture" id="firstName" name="firstName" class="element text medium"
 							type="text" maxlength="255" value="" />
 					</div></li>
 				<li id="li_4"><label class="description" for="lastName">LAST
 						NAME * </label>
 					<div>
-						<input id="lastName" name="lastName" class="element text medium"
+						<input required="ture" id="lastName" name="lastName" class="element text medium"
 							type="text" maxlength="255" value="" />
 					</div></li>
 				<li class="section_break">
@@ -57,13 +61,13 @@
 					<p></p>
 				</li>
 				<li id="li_5"><label class="description" for="element_5">Check-in
-						Date </label> <span> <input id="element_5_1" name="month"
+						Date </label> <span> <input required="ture" id="element_5_1" name="month"
 						class="element text" size="2" maxlength="2" value="" type="text">
 						/ <label for="month">MM</label>
-				</span> <span> <input id="element_5_2" name="dateOfMonth"
+				</span> <span> <input required="ture" id="element_5_2" name="dateOfMonth"
 						class="element text" size="2" maxlength="2" value="" type="text">
 						/ <label for="dateOfMonth">DD</label>
-				</span> <span> <input id="element_5_3" name="yyyy"
+				</span> <span> <input required="ture" id="element_5_3" name="yyyy"
 						class="element text" size="4" maxlength="4" value="" type="text">
 						<label for="yyyy">YYYY</label>
 				</span> <span id="element_5_calendar_5"> <img id="cal_img_5"
@@ -83,7 +87,7 @@
 						<small>Select a day when you want to schedule the check-in.</small>
 					</p></li>
 				<li id="li_6"><label class="description" for="element_6">Check-In Time
-				</label> <span> <select class="element select small" id="hh"
+				</label> <span> <select required="ture" class="element select small" id="hh"
 						name="hh" style="width: 4em">
 							<option value="" selected="selected">HH</option>
 							<option value="00">00</option>
@@ -112,7 +116,7 @@
 							<option value="23">23</option>
 							
 					</select> : <label>HH</label>
-				</span> <span> <select class="element select small" id="mm"
+				</span> <span> <select required="ture" class="element select small" id="mm"
 						name="mm" style="width: 4em">
 							<option value="" selected="selected">MM</option>
 							<option value="00">00</option>
@@ -178,7 +182,7 @@
 					</select> : <label>MM</label>
 				</span> 
 				
-				<span> <select class="element select medium" id="ss" name="ss" style="width: 4em">
+				<span> <select required="ture" class="element select medium" id="ss" name="ss" style="width: 4em">
 							<option value="" selected="selected">SS</option>
 							<option value="00">00</option>
 							<option value="01">01</option>
@@ -248,7 +252,7 @@
 				<li id="li_8"><label class="description" for="element_8">TIME
 						ZONE </label>
 					<div>
-						<select class="element select large" id="timeZone" name="timeZone">
+						<select required="ture" class="element select large" id="timeZone" name="timeZone">
 							<option value="EST">Eastern Standard Time (EST)</option>
 							<option value="IST">Indian Standard Time (IST)</option>
 							<option value="">-- Select--</option>
@@ -261,7 +265,7 @@
 				<li id="li_7"><label class="description" for="element_7">Email
 				</label>
 					<div>
-						<input id="email" name="email" class="element text medium"
+						<input id="emai" name="email" type="email" placeholder="you@example.com" class="element text medium"
 							type="text" maxlength="255" value="" />
 					</div>
 					<p class="guidelines" id="guide_7">

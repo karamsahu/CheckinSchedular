@@ -70,15 +70,16 @@ public class WebRobot {
 			statusCode = response.getStatusLine().getStatusCode();
 
 			if (statusCode == 404) {
-				Response.status(statusCode).entity("No checkin Information found").build();
+				return Response.status(statusCode).entity("No checkin Information found").build();
+				
 			}
 			
 			if (statusCode == 400) {
-				Response.status(statusCode).entity("API token is invalide or bad request").build();
+				return Response.status(statusCode).entity("API token is invalide or bad request").build();
 			}
 
-			if (statusCode == 201) {
-				Response.status(statusCode).entity("API token is invalide or bad request").build();
+			if (statusCode == 201 || statusCode == 200) {
+				return Response.status(statusCode).entity("Checkin successfully completed.").build();
 			}
 		} finally {
 			// Important: Close the connect

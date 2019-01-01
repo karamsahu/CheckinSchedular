@@ -1,6 +1,12 @@
 package in.capofila.spring.model;
 
-public class CheckinDetails {
+import java.io.Serializable;
+
+public class CheckinDetails implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String confirmationNumber;
 	private String firstName;
 	private String lastName;
