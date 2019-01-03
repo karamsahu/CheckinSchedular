@@ -12,6 +12,7 @@ import org.apache.http.util.EntityUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import in.capofila.spring.commons.SchedulerUtils;
 import in.capofila.spring.model.CheckinDetails;
 import in.capofila.spring.model.CheckinRequestEntity;
 
@@ -79,7 +80,9 @@ public class WebRobot {
 			statusCode = response.getStatusLine().getStatusCode();
 
 			if (statusCode == 404) {
-				System.err.println("http status : 404, Msg : No checkin Information found");
+				System.err.println("http status : 404, Msg : No checkin Information found");				
+				EmailSender.sendMimeEmail(details.getEmail(), "Successfull! Auto Flight Checkin has been done just now.", SchedulerUtils.emailFormatter(details));
+
 				return Response.status(statusCode).entity("No checkin Information found").build();
 				
 			}

@@ -1,7 +1,7 @@
 package in.capofila.spring.service;
 
-import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
@@ -32,53 +32,12 @@ public class CheckinServiceImpl implements CheckinService {
 	Scheduler sched = null;
 	{
 		try {
-			System.out.println("schedular started");
+			System.out.println("Schedular started...");
 			sched = sf.getScheduler();
 			sched.start();
 		} catch (SchedulerException e) {
 			e.printStackTrace();
 		}
-	}
-
-	@Override
-	public boolean doCheckin(CheckinDetails details) {
-		// set the check in details in job object field
-		// new CheckInJob(details);
-		try {
-			sched = sf.getScheduler();
-			// define the job and tie it to our CheckinDetails class
-			StringBuilder schdueTimestamp = new StringBuilder();
-			schdueTimestamp.append(details.getMonth()).append("/").append(details.getDateOfMonth()).append("/")
-					.append(details.getYyyy());
-
-			String triggerIdentity = "Checkin-" + details.getFirstName() + " on " + schdueTimestamp + " at "
-					+ details.getHh() + ":" + details.getMm() + ":" + details.getSs();
-
-			JobDetail checkinJob = JobBuilder.newJob(CheckInJob.class)
-					.withIdentity(triggerIdentity, "south-west-boarding").build();
-
-			// Second -- Minute -- Hour -- DayOfMonth -- Month -- DayOfWeek -- Year
-			// +details.getYyyy()
-			CronScheduleBuilder cb = CronScheduleBuilder
-					.cronSchedule(new CronExpression(
-							details.getSs() + " " + details.getMm() + " " + details.getHh() + " ? * * "))
-					.inTimeZone(TimeZone.getTimeZone(details.getTimeZone()));
-
-			final Trigger trigger = TriggerBuilder.newTrigger().withIdentity("CheckIn-Trigger").withSchedule(cb)
-					.forJob(checkinJob).build();
-
-			// Tell quartz to schedule the job using our trigger
-			sched.scheduleJob(checkinJob, trigger);
-			sched.start();
-		} catch (SchedulerException e) {
-			e.printStackTrace();
-			return false;
-		} catch (ParseException e) {
-			e.printStackTrace();
-			return false;
-		}
-
-		return true;
 	}
 
 	@Override
@@ -125,11 +84,10 @@ public class CheckinServiceImpl implements CheckinService {
 	public boolean cancellJob(String jobName, String groupName) {
 		boolean status = false;
 		try {
-			JobKey key = JobKey.jobKey(jobName,groupName);
+			JobKey key = JobKey.jobKey(jobName, groupName);
 			sched.getJobDetail(key);
-			
-				status = sched.deleteJob(key);
-			
+			status = sched.deleteJob(key);
+
 		} catch (SchedulerException e) {
 			e.printStackTrace();
 			return false;
@@ -154,7 +112,7 @@ public class CheckinServiceImpl implements CheckinService {
 						jobs.setScheduledTime(scheduledTime.toString());
 						jobs.setJobTriggerName(trigger.getKey().getName());
 						jobs.setJobTriggerGroup(trigger.getKey().getGroup());
-						
+
 						JobDetail details = sched.getJobDetail(jobKey);
 						jobs.setJobStatus(checkJobState(trigger));
 						JobDataMap jdp = details.getJobDataMap();
@@ -174,14 +132,15 @@ public class CheckinServiceImpl implements CheckinService {
 	public boolean createJob(CheckinDetails checkinDetails) {
 		boolean status = true;
 		try {
+			TimeZone.setDefault(TimeZone.getTimeZone(checkinDetails.getTimeZone()));
 			String detail = checkinDetails.getConfirmationNumber() + "-" + checkinDetails.getFirstName() + "-"
 					+ checkinDetails.getLastName();
-			
+
 			String jobName = "Job-" + detail;
 			String groupName = "SOUTHWEST";
 			String triggerName = "Trigger-" + detail;
 
-			JobKey jobKey = new JobKey(jobName,groupName);
+			JobKey jobKey = new JobKey(jobName, groupName);
 
 			JobDataMap jdp = new JobDataMap();
 			jdp.put("checkinDetails", checkinDetails);
@@ -192,18 +151,30 @@ public class CheckinServiceImpl implements CheckinService {
 			JobDetail jobDetail = JobBuilder.newJob(CheckInJob.class).withIdentity(jobKey).usingJobData(jdp)
 					.storeDurably().build();
 
-			Trigger jobTrigger = TriggerBuilder.newTrigger().withIdentity(triggerName,groupName)
-					.withSchedule(CronScheduleBuilder.cronSchedule(new CronExpression(checkinDetails.getSs() + " "
-							+ checkinDetails.getMm() + " " + checkinDetails.getHh() + " ? * * ")))
-					.usingJobData(jdp).forJob(jobDetail).build();
-			//Listener attached to jobKey
-			sched.getListenerManager().addJobListener(
-	    		new CheckInJobListener(), KeyMatcher.keyEquals(jobKey)
-	    	);
-			/*System.out.println("Added Job with Key"+jobDetail.getKey().getName());
-			System.out.println("and Group "+jobDetail.getKey().getGroup());
-			System.out.println("Added Trigger Key"+jobTrigger.getKey().getName());
-			System.out.println("and group "+jobTrigger.getKey().getGroup());*/
+			Date startDate = new Date();
+
+			Calendar cal1 = Calendar.getInstance();
+			cal1.set(Integer.parseInt(checkinDetails.getYyyy()), Integer.parseInt(checkinDetails.getMonth()),
+					Integer.parseInt(checkinDetails.getDateOfMonth()));
+			//cal1.setTimeZone(TimeZone.getTimeZone(checkinDetails.getTimeZone()));
+			startDate = cal1.getTime();
+
+			Trigger jobTrigger = TriggerBuilder.newTrigger().withIdentity(triggerName, groupName)
+					.withSchedule(CronScheduleBuilder
+							.cronSchedule(new CronExpression(checkinDetails.getSs() + " " + checkinDetails.getMm() + " "
+									+ checkinDetails.getHh() + " ? * * "))
+							.inTimeZone(TimeZone.getTimeZone(checkinDetails.getTimeZone()))
+							.withMisfireHandlingInstructionFireAndProceed())
+					.startAt(startDate).usingJobData(jdp).forJob(jobDetail).build();
+
+			// Listener attached to jobKey
+			sched.getListenerManager().addJobListener(new CheckInJobListener(), KeyMatcher.keyEquals(jobKey));
+			/*
+			 * System.out.println("Added Job with Key"+jobDetail.getKey().getName());
+			 * System.out.println("and Group "+jobDetail.getKey().getGroup());
+			 * System.out.println("Added Trigger Key"+jobTrigger.getKey().getName());
+			 * System.out.println("and group "+jobTrigger.getKey().getGroup());
+			 */
 			sched.addJob(jobDetail, false);
 			sched.scheduleJob(jobTrigger);
 		} catch (Exception e) {
@@ -212,5 +183,11 @@ public class CheckinServiceImpl implements CheckinService {
 		} finally {
 			return status;
 		}
+	}
+
+	@Override
+	public boolean doCheckin(CheckinDetails details) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

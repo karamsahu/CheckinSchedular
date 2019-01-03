@@ -1,8 +1,14 @@
 package in.capofila.spring.bot;
 
+import javax.ws.rs.core.Response;
+
+import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.JobListener;
+
+import in.capofila.spring.commons.SchedulerUtils;
+import in.capofila.spring.model.CheckinDetails;
 
 public class CheckInJobListener implements JobListener {
 
@@ -27,8 +33,13 @@ public class CheckInJobListener implements JobListener {
 
 	@Override
 	public void jobWasExecuted(JobExecutionContext context, JobExecutionException jobException) {
-		String jobName = context.getJobDetail().getKey().toString();
+		JobDetail jobDetails = context.getJobDetail();
+		String jobName = jobDetails.getKey().toString();
+		CheckinDetails details = (CheckinDetails)jobDetails.getJobDataMap().get("checkinDetails");
+		Response res = (Response) context.getResult();
 		System.out.println("Job : " + jobName + " is finished...");
+		EmailSender.sendMimeEmail(details.getEmail(), "FLIGHT CHECKIN STATUS", SchedulerUtils.emailFormatter(details));
+		
 		if (!jobException.getMessage().equals("")) {
 			System.out.println("Exception thrown by: " + jobName + " Exception: " + jobException.getMessage());
 		}

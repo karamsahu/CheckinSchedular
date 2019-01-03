@@ -21,10 +21,8 @@
 		<h1>
 			<a>Flight Check-in Planner</a>
 		</h1>
-		<nav>
-		<a href="<c:url value='#' />">Refresh</a>
-		<a href="<c:url value='/schedule/get' />">Jobs</a>
-		</nav>
+		<nav> <a href="<c:url value='#' />">Refresh</a> <a
+			href="<c:url value='/schedule/get' />">Jobs</a> </nav>
 		<form id="form_42612" class="appnitro" method="post" action="schedule">
 			<div class="form_description">
 				<h2>Flight Check-in Planner</h2>
@@ -41,32 +39,34 @@
 				<li id="li_1"><label class="description"
 					for="confirmationNumber">CONFIRMATION # * </label>
 					<div>
-						<input style="text-transform:uppercase" required="ture" id="confirmationNumber" name="confirmationNumber"
-							class="element text medium" type="text" pattern=".{6,6}" required title="5 to 10 characters" value="" />
+						<input style="text-transform: uppercase" required="ture"
+							id="confirmationNumber" name="confirmationNumber"
+							class="element text medium" type="text" pattern=".{6,6}" required
+							title="Invalid confirmation number." maxlength="6" value="" />
 					</div></li>
 				<li id="li_3"><label class="description" for="firstName">FIRST
 						NAME * </label>
 					<div>
-						<input required="ture" id="firstName" name="firstName" class="element text medium"
-							type="text" maxlength="255" value="" />
+						<input required="ture" id="firstName" name="firstName"
+							class="element text medium" type="text" maxlength="25" value="" />
 					</div></li>
 				<li id="li_4"><label class="description" for="lastName">LAST
 						NAME * </label>
 					<div>
-						<input required="ture" id="lastName" name="lastName" class="element text medium"
-							type="text" maxlength="255" value="" />
+						<input required="ture" id="lastName" name="lastName"
+							class="element text medium" type="text" maxlength="25" value="" />
 					</div></li>
 				<li class="section_break">
 					<h3>Enter Check-in Details</h3>
 					<p></p>
 				</li>
 				<li id="li_5"><label class="description" for="element_5">Check-in
-						Date </label> <span> <input required="ture" id="element_5_1" name="month"
-						class="element text" size="2" maxlength="2" value="" type="text">
-						/ <label for="month">MM</label>
-				</span> <span> <input required="ture" id="element_5_2" name="dateOfMonth"
-						class="element text" size="2" maxlength="2" value="" type="text">
-						/ <label for="dateOfMonth">DD</label>
+						Date </label> <span> <input required="ture" id="element_5_1"
+						name="month" class="element text" size="2" maxlength="2" value=""
+						type="text"> / <label for="month">MM</label>
+				</span> <span> <input required="ture" id="element_5_2"
+						name="dateOfMonth" class="element text" size="2" maxlength="2"
+						value="" type="text"> / <label for="dateOfMonth">DD</label>
 				</span> <span> <input required="ture" id="element_5_3" name="yyyy"
 						class="element text" size="4" maxlength="4" value="" type="text">
 						<label for="yyyy">YYYY</label>
@@ -84,11 +84,12 @@
 					});
 				</script>
 					<p class="guidelines" id="guide_5">
-						<small>Select a day when you want to schedule the check-in.</small>
+						<small>Select a day when you want to schedule the
+							check-in.</small>
 					</p></li>
-				<li id="li_6"><label class="description" for="element_6">Check-In Time
-				</label> <span> <select required="ture" class="element select small" id="hh"
-						name="hh" style="width: 4em">
+				<li id="li_6"><label class="description" for="element_6">Check-In
+						Time </label> <span> <select required="ture"
+						class="element select small" id="hh" name="hh" style="width: 4em">
 							<option value="" selected="selected">HH</option>
 							<option value="00">00</option>
 							<option value="01">01</option>
@@ -103,6 +104,7 @@
 							<option value="10">10</option>
 							<option value="11">11</option>
 							<option value="12">12</option>
+							<!-- 
 							<option value="13">13</option>
 							<option value="14">14</option>
 							<option value="15">15</option>
@@ -113,11 +115,11 @@
 							<option value="20">20</option>
 							<option value="21">21</option>
 							<option value="22">22</option>
-							<option value="23">23</option>
-							
+							<option value="23">23</option> -->
+
 					</select> : <label>HH</label>
-				</span> <span> <select required="ture" class="element select small" id="mm"
-						name="mm" style="width: 4em">
+				</span> <span> <select required="ture" class="element select small"
+						id="mm" name="mm" style="width: 4em">
 							<option value="" selected="selected">MM</option>
 							<option value="00">00</option>
 							<option value="01">01</option>
@@ -180,9 +182,8 @@
 							<option value="58">58</option>
 							<option value="59">59</option>
 					</select> : <label>MM</label>
-				</span> 
-				
-				<span> <select required="ture" class="element select medium" id="ss" name="ss" style="width: 4em">
+				</span> <span> <select required="ture" class="element select medium"
+						id="ss" name="ss" style="width: 4em">
 							<option value="" selected="selected">SS</option>
 							<option value="00">00</option>
 							<option value="01">01</option>
@@ -245,18 +246,24 @@
 							<option value="58">58</option>
 							<option value="59">59</option>
 					</select> <label>SS</label>
-				</span> 
+				</span> <span> <select required="ture" class="element select medium"
+						id="apmpm" name="apmpm" style="width: 4em">
+							<option value="am" selected="selected">AM</option>
+							<option value="pm">PM</option>
+					</select> <label>AM PM</label>
+				</span>
 					<p class="guidelines" id="guide_6">
 						<small>Select Time when you want to schedule the check-in.</small>
 					</p></li>
+
 				<li id="li_8"><label class="description" for="element_8">TIME
 						ZONE </label>
 					<div>
-						<select required="ture" class="element select large" id="timeZone" name="timeZone">
+						<select required="ture" class="element select large" id="timeZone"
+							name="timeZone">
+							<option value="" selected="selected">-- Select--</option>
 							<option value="EST">Eastern Standard Time (EST)</option>
 							<option value="IST">Indian Standard Time (IST)</option>
-							<option value="">-- Select--</option>
-
 						</select>
 					</div>
 					<p class="guidelines" id="guide_8">
@@ -265,7 +272,8 @@
 				<li id="li_7"><label class="description" for="element_7">Email
 				</label>
 					<div>
-						<input id="emai" name="email" type="email" placeholder="you@example.com" class="element text medium"
+						<input id="email" name="email" type="email"
+							placeholder="you@example.com" class="element text medium"
 							type="text" maxlength="255" value="" />
 					</div>
 					<p class="guidelines" id="guide_7">

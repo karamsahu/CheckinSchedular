@@ -15,8 +15,15 @@ public class CheckinDetails implements Serializable{
 	private String jobName;
 	private Boolean jobStatus;
 	
-	private String dateOfMonth,month,yyyy,timeZone,email, hh, mm, ss;
+	private String dateOfMonth,month,yyyy,timeZone,email, hh, mm, ss,apmpm;
 		
+	public void setApmpm(String apmpm) {
+		this.apmpm = apmpm;
+	}
+	
+	public String getApmpm() {
+		return apmpm;
+	}
 	public void setJobStatus(Boolean jobStatus) {
 		this.jobStatus = jobStatus;
 	}
@@ -118,11 +125,7 @@ public class CheckinDetails implements Serializable{
 		return "CheckinDetails [confirmationNumber=" + confirmationNumber + ", firstName=" + firstName + ", lastName="
 				+ lastName + ", application=" + application + ", site=" + site + ", jobName=" + jobName + ", jobStatus="
 				+ jobStatus + ", dateOfMonth=" + dateOfMonth + ", month=" + month + ", yyyy=" + yyyy + ", timeZone="
-				+ timeZone + ", email=" + email + ", hh=" + hh + ", mm=" + mm + ", ss=" + ss + "]";
+				+ timeZone + ", email=" + email + ", hh=" + hh + ", mm=" + mm + ", ss=" + ss + ", apmpm=" + apmpm + "]";
 	}
-	
 
-	
-	
-	
 }
