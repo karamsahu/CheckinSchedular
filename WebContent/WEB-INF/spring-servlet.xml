@@ -32,6 +32,8 @@
 	<!-- serve theme and js files -->
 	<mvc:resources mapping="/resources/**"
 		location="/resources/theme/" cache-period="31556926" />
-
+	<mvc:annotation-driven />
+	<mvc:resources mapping="/db/**"
+		location="/resources/db/" cache-period="31556926" />
 	<mvc:annotation-driven />
 </beans:beans>

@@ -1,9 +1,6 @@
 package in.capofila.spring.test;
 
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-
-import in.capofila.spring.service.MailerService;
+import in.capofila.spring.bot.EmailSender;
 
 public class ApplicationTest {
 //	public static void main(String[] args) {
@@ -12,21 +9,9 @@ public class ApplicationTest {
 //	}
 	
 	public static void main(String args[]) {
-		 
-		// Spring Bean file you specified in /src/main/resources folder
-		String crunchifyConfFile = "checkinscheduler-bean.xml";
-		ConfigurableApplicationContext context = new ClassPathXmlApplicationContext(crunchifyConfFile);
- 
-		// @Service("crunchifyEmail") <-- same annotation you specified in CrunchifyEmailAPI.java
-		MailerService crunchifyEmailAPI = (MailerService) context.getBean("checkinSchedularEmailService");
-		String toAddr = "karansahu@gmail.com";
- 
-		// email subject
-		String subject = "Hey.. This email sent by Flight Checkin Scheduler";
- 
-		// email body
-		String body = "There you go.. You got an email.. Let's understand details on how Spring MVC works -- By Crunchify Admin";
-		crunchifyEmailAPI.sendMail(toAddr, subject, body);
+	EmailSender.sendEmail("karamsahu@gmail.com", "ApplicationTestMail", "<h1>this is schedular Applicaiton test mail</h1>");
+
+		
 	}
 	
 	

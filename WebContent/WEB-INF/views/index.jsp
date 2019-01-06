@@ -91,7 +91,6 @@
 						Time </label> <span> <select required="ture"
 						class="element select small" id="hh" name="hh" style="width: 4em">
 							<option value="" selected="selected">HH</option>
-							<option value="00">00</option>
 							<option value="01">01</option>
 							<option value="02">02</option>
 							<option value="03">03</option>
@@ -259,11 +258,14 @@
 				<li id="li_8"><label class="description" for="element_8">TIME
 						ZONE </label>
 					<div>
-						<select required="ture" class="element select large" id="timeZone"
+						<select required="true" class="element select large" id="timeZone"
 							name="timeZone">
 							<option value="" selected="selected">-- Select--</option>
-							<option value="EST">Eastern Standard Time (EST)</option>
-							<option value="IST">Indian Standard Time (IST)</option>
+							<option value="EST">EST	EASTERN  STANDARD TIME 	UTC - 5</option>
+							<option value="CST">CST	CENTRAL  STANDARD TIME	UTC - 6</option>
+							<option value="MST">MST	MOUNTAIN STANDARD TIME	UTC - 7</option>
+							<option value="PST">PST	PACIFIC  STANDARD TIME	UTC - 8</option>
+							<option value="IST">IST	INDIAN   STANDARD TIME	GMT - 5.30</option>
 						</select>
 					</div>
 					<p class="guidelines" id="guide_8">
