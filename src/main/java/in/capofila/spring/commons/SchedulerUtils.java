@@ -5,6 +5,9 @@ import java.util.Date;
 import in.capofila.spring.model.CheckinDetails;
 
 public class SchedulerUtils {
+	public SchedulerUtils() {
+		// TODO Auto-generated constructor stub
+	}
 	public static String emailFormatter(CheckinDetails details) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<html><body><table style='border:1px solid black'>");

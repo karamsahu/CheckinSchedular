@@ -13,7 +13,9 @@ import in.capofila.spring.model.CheckinDetails;
 
 public class CheckInJob implements Job {
 	Logger logger = Logger.getLogger(CheckInJob.class);
-
+	public CheckInJob() {
+		//let it be here
+	}
 	@Override
 	public void execute(JobExecutionContext context) throws JobExecutionException {
 
@@ -24,8 +26,8 @@ public class CheckInJob implements Job {
 		WebRobot rb = new WebRobot();
 		try {
 			Response submitResult = rb.submittingForm(checkinDetails);
-			String result = parseResponse(submitResult);
-			context.setResult(result);
+//			String result = parseResponse(submitResult);
+//			context.setResult(result);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

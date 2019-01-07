@@ -3,7 +3,9 @@ package in.capofila.spring.model;
 public class ScheduledJobs {
 	// System.out.println("[jobName] : " + jobName + " [groupName] : " + jobGroup +
 	// " - " + nextFireTime);
-	
+	public ScheduledJobs() {
+		// TODO Auto-generated constructor stub
+	}
 	private String jobName;
 	private String jobGroup;
 	private String jobTriggerName;

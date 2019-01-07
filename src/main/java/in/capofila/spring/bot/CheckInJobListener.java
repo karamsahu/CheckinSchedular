@@ -19,6 +19,10 @@ public class CheckInJobListener implements JobListener {
 	public static final String LISTENER_NAME = "SouthWestCheckinJobListner";
 	Logger logger = Logger.getLogger(this.getClass());
 
+	public CheckInJobListener() {
+		// TODO Auto-generated constructor stub
+	}
+
 	@Override
 	public String getName() {
 		return LISTENER_NAME;
@@ -54,7 +58,7 @@ public class CheckInJobListener implements JobListener {
 				jobs.setJobTriggerGroup(trigger.getKey().getGroup());
 				context.setResult(jobs);
 			}
-			
+
 			int refireCount = context.getRefireCount();
 			Date actualFireTime = context.getFireTime();
 			long jobExecutionDuration = context.getJobRunTime();
@@ -73,5 +77,5 @@ public class CheckInJobListener implements JobListener {
 		}
 
 	}
-	
+
 }

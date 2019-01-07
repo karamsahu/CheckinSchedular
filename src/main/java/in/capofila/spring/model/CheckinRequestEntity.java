@@ -3,6 +3,9 @@ package in.capofila.spring.model;
 public class CheckinRequestEntity {
 	// StringEntity("{\"confirmationNumber\":\"asa232\",\"passengerFirstName\":
 	// \"asdf\",\"passengerLastName\":\"asdf\",\"application\":\"air-check-in\",\"site\":\"southwest\"}");
+	public CheckinRequestEntity() {
+		// TODO Auto-generated constructor stub
+	}
 
 	private String confirmationNumber;
 	private String passengerFirstName;
@@ -48,7 +51,5 @@ public class CheckinRequestEntity {
 				+ passengerFirstName + ", passengerLastName=" + passengerLastName + ", application=" + application
 				+ ", site=" + site + "]";
 	}
-	
-	
 
 }

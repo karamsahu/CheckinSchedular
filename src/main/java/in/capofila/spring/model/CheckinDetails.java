@@ -9,6 +9,9 @@ public class CheckinDetails implements Serializable {
 	/**
 	 * 
 	 */
+	public CheckinDetails() {
+		// TODO Auto-generated constructor stub
+	}
 	private static final long serialVersionUID = 1L;
 	private String confirmationNumber;
 	private String firstName;

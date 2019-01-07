@@ -33,6 +33,9 @@ public class EmailUtil {
 	 * @param subject
 	 * @param body
 	 */
+	public EmailUtil() {
+		// TODO Auto-generated constructor stub
+	}
 	public static boolean sendEmail(String toEmail, String subject, String body) {
 		logger.debug("Send mail invoked....");
 		boolean status = true;

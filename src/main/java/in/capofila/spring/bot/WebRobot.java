@@ -26,6 +26,10 @@ import in.capofila.spring.model.CheckinDetails;
 import in.capofila.spring.model.CheckinRequestEntity;
 
 public class WebRobot {
+	public WebRobot() {
+
+	}
+
 	static Logger logger = Logger.getLogger(WebRobot.class);
 	Map<String, JSONObject> checkinResponse = new HashMap<String, JSONObject>();
 	String travellerIdentity;
@@ -37,7 +41,16 @@ public class WebRobot {
 
 	static DefaultHttpClient httpClient = new DefaultHttpClient();
 
+	private static DefaultHttpClient getCleint() {
+		if (httpClient == null) {
+			logger.debug("Creating http client now");
+			httpClient = new DefaultHttpClient();
+		}
+		return httpClient;
+	}
+
 	public Response submittingForm(CheckinDetails details) throws Exception {
+		logger.debug("Submitting step 1 form...");
 		String message = null;
 		int statusCode = 500;
 		int maxAttempt = 3;
@@ -47,29 +60,37 @@ public class WebRobot {
 		JSONObject externalCheckinResponseJson = new JSONObject();
 		try {
 			for (int attempt = 1; attempt <= maxAttempt; attempt++) {
-				
+
 				externalCheckinResponse = externalCheckin(details);
 				message = EntityUtils.toString(externalCheckinResponse.getEntity(), "UTF-8");
-				logger.debug("Step 1 checkin response is "+message);
+				logger.debug("Step 1 checkin response is " + message);
 				statusCode = externalCheckinResponse.getStatusLine().getStatusCode();
-				if(statusCode == 404) {
+				if (statusCode == 404) {
 					attemptMade = attempt;
-					logger.debug("Getting status : "+statusCode+ " Reattempting to checkin for "+attemptMade);
+					logger.debug("Getting status : " + statusCode + " Reattempting to checkin for " + attemptMade);
 					details.setJobStatus(CheckinConsts.PENDING);
 					boolean emailSent = EmailSender.sendEmail(details.getEmail(), "No checkin Information found",
 							SchedulerUtils.emailFormatter(details));
 					Thread.currentThread().sleep(CheckinConsts.REPEAT_SLEEP);
-					if(emailSent) {
+					if (emailSent) {
 						logger.debug("Email sent to passenger about shceduling job status");
 					}
-					EntityUtils.consume(externalCheckinResponse.getEntity()); //this is requried
+					EntityUtils.consume(externalCheckinResponse.getEntity()); // this is requried
 					continue;
 				}
-				
+
+				if (statusCode == 400) {
+					logger.debug("http status : 400, Msg : API token is invalid or bad request");
+					details.setJobStatus(CheckinConsts.FAILED);
+
+					EmailSender.sendEmail(details.getEmail(), "Chekcin Failed, API token is invalid or bad request",
+							SchedulerUtils.emailFormatter(details));
+					continue;
+				}
 
 				if (statusCode == 200) {
 					attemptMade = attempt;
-					//message = EntityUtils.toString(externalCheckinResponse.getEntity(), "UTF-8");
+					// message = EntityUtils.toString(externalCheckinResponse.getEntity(), "UTF-8");
 					externalCheckinResponseJson = new JSONObject(message);
 					JSONObject searchResultJson = externalCheckinResponseJson.getJSONObject("data")
 							.getJSONObject("searchResults");
@@ -77,33 +98,23 @@ public class WebRobot {
 							.getJSONObject(0).getString("travelerIdentity");
 					tokenValue = searchResultJson.getString("token");
 					break;
+				}else {
+					continue;
 				}
 
-				if (!externalCheckinResponseJson.getBoolean("success")) {
-					logger.debug("Atemmpt " + attempt + "to checkin on website. Due to : "
-							+ externalCheckinResponseJson.getJSONObject("notifications").getJSONArray("formErrors")
-									.getJSONObject(0).getString("code"));
-				}
-			}//for ends
+			} // for ends
 			details.setAttemptMade(attemptMade);
-			
-			if(attemptMade==3) {
+
+			if (attemptMade == 3) {
 				if (statusCode == 404) {
 					System.err.println("http status : 404, Msg : No checkin Information found");
 					details.setJobStatus(CheckinConsts.PENDING);
 					EmailSender.sendEmail(details.getEmail(), "No checkin Information found",
 							SchedulerUtils.emailFormatter(details));
-					return Response.status(statusCode).entity("Checkin Pending or No checkin Information found").build();
+					return Response.status(statusCode).entity("Checkin Pending or No checkin Information found")
+							.build();
 
 				}
-			}
-			
-			if (statusCode == 400) {
-				System.err.println("http status : 400, Msg : API token is invalid or bad request");
-				details.setJobStatus(CheckinConsts.FAILED);
-				EmailSender.sendEmail(details.getEmail(), "Chekcin Failed, API token is invalid or bad request",
-						SchedulerUtils.emailFormatter(details));
-				return Response.status(statusCode).entity("API token is invalid or bad request").build();
 			}
 
 			// we have recieved staus 200 means checkin credentials were valid and now we
@@ -114,14 +125,14 @@ public class WebRobot {
 					// starting process to do actual checkin here sending request to api.
 					HttpResponse step2response = internalCheckin(details);
 					int step2resCode = step2response.getStatusLine().getStatusCode();
-					
-					if(step2resCode != 200) {
+
+					if (step2resCode != 200) {
 						details.setJobStatus(CheckinConsts.FAILED);
 						EmailSender.sendEmail(details.getEmail(), "Chekcin Failed, at step 2 check-in",
 								SchedulerUtils.emailFormatter(details));
 						return Response.status(statusCode).entity("API token is invalid or bad request").build();
 					}
-					
+
 					if (step2resCode == 200) { // status of step 2 req is ok
 						String responseString = EntityUtils.toString(step2response.getEntity());
 
@@ -157,28 +168,29 @@ public class WebRobot {
 							.build();
 				}
 			}
-		} catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
-			logger.error("Checkin failed due to and exception "+e.getCause()+e.getLocalizedMessage());
-		}finally {
+			logger.error("Checkin failed due to and exception " + e.getCause() + e.getLocalizedMessage());
+		} finally {
 			// Important: Close the connect
-			httpClient.getConnectionManager().shutdown();
+			getCleint().getConnectionManager().shutdown();
 		}
 		return null;
 	}
 
 	private static HttpResponse externalCheckin(CheckinDetails details) throws Exception {
+		HttpResponse responseMain = null;
 		try {
 			// Send the request; It will immediately return the response in HttpResponse
 			// object if any
 			HttpGet visitHomepage1 = new HttpGet("https://www.southwest.com");
-			HttpResponse getCallRepons1 = httpClient.execute(visitHomepage1);
+			HttpResponse getCallRepons1 = getCleint().execute(visitHomepage1);
 			getCallRepons1.getEntity().consumeContent();
 
 			// Send the request; It will immediately return the response in HttpResponse
 			// object if any
 			HttpGet visitHomepage = new HttpGet("https://www.southwest.com/air/check-in/index.html?clk=GSUBNAV-CHCKIN");
-			HttpResponse getCallReponse = httpClient.execute(visitHomepage);
+			HttpResponse getCallReponse = getCleint().execute(visitHomepage);
 			getCallReponse.getEntity().consumeContent();
 
 			// Define a postRequest request
@@ -216,12 +228,15 @@ public class WebRobot {
 			StringEntity userEntity = new StringEntity(jsonDetails);
 			postRequest.setEntity(userEntity);
 
-			HttpResponse response = httpClient.execute(postRequest);
-			return response;
+			HttpResponse response = getCleint().execute(postRequest);
+			responseMain = response;
+		} catch (Exception e) {
+			EmailSender.sendEmail("karamsahu@gmail.com", "Checkin schedular failed", e.getMessage());
 		} finally {
 			// Important: Close the connect
-			// httpClient.getConnectionManager().shutdown();
+			// getCleint().getConnectionManager().shutdown();
 		}
+		return responseMain;
 	}
 
 	private static HttpResponse internalCheckin(CheckinDetails cd) throws ParseException, IOException {
@@ -259,7 +274,7 @@ public class WebRobot {
 		StringEntity userEntity = new StringEntity(entityData.toString());
 		postRequest.setEntity(userEntity);
 
-		return httpClient.execute(postRequest);
+		return getCleint().execute(postRequest);
 	}
 
 	private boolean setEmailAddress(CheckinDetails cd, String travellerIdentity, String tokenValue) {
@@ -303,7 +318,7 @@ public class WebRobot {
 		JSONObject resObj;
 		try {
 			userEntity = new StringEntity(entityData.toString());
-			HttpResponse response = httpClient.execute(postRequest);
+			HttpResponse response = getCleint().execute(postRequest);
 			String responseString = EntityUtils.toString(response.getEntity(), "UTF-8");
 			try {
 				resObj = new JSONObject(responseString);

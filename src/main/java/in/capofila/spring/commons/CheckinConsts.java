@@ -1,7 +1,9 @@
 package in.capofila.spring.commons;
 
 public class CheckinConsts {
-	
+	public CheckinConsts() {
+		// TODO Auto-generated constructor stub
+	}
 	//CHECKIN STATUS FLAGS
 	public static final String PENDING = "Check-in Pending";
 	public static final String CONFIRMED = "Check-in Confirmed"; 

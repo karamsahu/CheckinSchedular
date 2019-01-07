@@ -26,8 +26,8 @@ public class Applicaiton {
 			JobDetail checkinJob = JobBuilder.newJob(CheckInJob.class).withIdentity("checkin", "south-west-boarding").build();
 			
 			// Second -- Minute --  Hour --  DayOfMonth -- Month -- DayOfWeek -- Year	
-			CronScheduleBuilder cb = CronScheduleBuilder.cronSchedule(new CronExpression("25 32 08 ? * *"))
-					.inTimeZone(TimeZone.getTimeZone("EST"));
+			CronScheduleBuilder cb = CronScheduleBuilder.cronSchedule(new CronExpression("25 02 01 ? * *"))
+					.inTimeZone(TimeZone.getTimeZone("IST"));
 
 			final Trigger trigger = TriggerBuilder.newTrigger().withIdentity("Trigger-checkin").withSchedule(cb)
 					.forJob(checkinJob).build();
