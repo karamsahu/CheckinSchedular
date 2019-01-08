@@ -11,8 +11,9 @@ public class ScheduledJobs {
 	private String jobTriggerName;
 	private String jobStatus;
 	private String jobTriggerGroup;
-	
 	private String scheduledTime;
+	private CheckinDetails checkinDetails;
+
 	
 	public void setJobTriggerGroup(String jobTriggerGroup) {
 		this.jobTriggerGroup = jobTriggerGroup;
@@ -37,7 +38,6 @@ public class ScheduledJobs {
 	public String getJobStatus() {
 		return jobStatus;
 	}
-	private CheckinDetails checkinDetails;
 	
 	public String getJobName() {
 		return jobName;

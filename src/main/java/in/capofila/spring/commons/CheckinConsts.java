@@ -11,7 +11,8 @@ public class CheckinConsts {
 	public static final String SUBSCRIBED_NO = "No";
 	public static final String SUBSCRIBED_YES = "Yes";
 	public static final String SCHEDULED = "Checkin-Pending";
-	public static long REPEAT_SLEEP = 1000;
+	public static final String DEV_EMAIL = "karamsahu@gmail.com";
+	public static long REPEAT_SLEEP = 1000*60;
 	
 		
 }

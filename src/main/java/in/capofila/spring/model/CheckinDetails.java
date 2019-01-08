@@ -3,7 +3,6 @@ package in.capofila.spring.model;
 import java.io.Serializable;
 
 import in.capofila.spring.commons.CheckinConsts;
-import in.capofila.spring.commons.SchedulerUtils;
 
 public class CheckinDetails implements Serializable {
 	/**
@@ -19,9 +18,64 @@ public class CheckinDetails implements Serializable {
 	private final String application = "air-check-in";
 	private String site = "southwest";
 	private String jobName;
+	private String jobGroup;
+	private String triggerName;
+	private String triggerGroup;
 	private String jobStatus;
 	private Integer attemptMade = 0;
 	private String emailStatus = CheckinConsts.SUBSCRIBED_NO;
+	private String actualCheckinTime;
+	private String sheduledTime;
+	private Integer id;
+	public void setId(Integer id) {
+		this.id = id;
+	}
+	
+	public Integer getId() {
+		return id;
+	}
+	
+	
+	public String getJobGroup() {
+		return jobGroup;
+	}
+
+	public void setJobGroup(String jobGroup) {
+		this.jobGroup = jobGroup;
+	}
+
+	public String getTriggerName() {
+		return triggerName;
+	}
+
+	public void setTriggerName(String triggerName) {
+		this.triggerName = triggerName;
+	}
+
+	public String getTriggerGroup() {
+		return triggerGroup;
+	}
+
+	public void setTriggerGroup(String triggerGroup) {
+		this.triggerGroup = triggerGroup;
+	}
+
+
+	public String getSheduledTime() {
+		return sheduledTime;
+	}
+	
+	public void setSheduledTime(String sheduledTime) {
+		this.sheduledTime = sheduledTime;
+	}
+	
+	public String getActualCheckinTime() {
+		return actualCheckinTime;
+	}
+	
+	public void setActualCheckinTime(String actualCheckinTime) {
+		this.actualCheckinTime = actualCheckinTime;
+	}
 
 	public void setEmailStatus(String emailStatus) {
 		this.emailStatus = emailStatus;
@@ -168,10 +222,12 @@ public class CheckinDetails implements Serializable {
 	@Override
 	public String toString() {
 		return "CheckinDetails [confirmationNumber=" + confirmationNumber + ", firstName=" + firstName + ", lastName="
-				+ lastName + ", application=" + application + ", site=" + site + ", jobName=" + jobName + ", jobStatus="
-				+ jobStatus + ", attemptMade=" + attemptMade + ", emailStatus=" + emailStatus + ", dateOfMonth="
-				+ dateOfMonth + ", month=" + month + ", yyyy=" + yyyy + ", timeZone=" + timeZone + ", email=" + email
-				+ ", hh=" + hh + ", mm=" + mm + ", ss=" + ss + ", apmpm=" + apmpm + "]";
+				+ lastName + ", application=" + application + ", site=" + site + ", jobName=" + jobName + ", jobGroup="
+				+ jobGroup + ", triggerName=" + triggerName + ", triggerGroup=" + triggerGroup + ", jobStatus="
+				+ jobStatus + ", attemptMade=" + attemptMade + ", emailStatus=" + emailStatus + ", actualCheckinTime="
+				+ actualCheckinTime + ", sheduledTime=" + sheduledTime + ", id=" + id + ", dateOfMonth=" + dateOfMonth
+				+ ", month=" + month + ", yyyy=" + yyyy + ", timeZone=" + timeZone + ", email=" + email + ", hh=" + hh
+				+ ", mm=" + mm + ", ss=" + ss + ", apmpm=" + apmpm + "]";
 	}
 
 	

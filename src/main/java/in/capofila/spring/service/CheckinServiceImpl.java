@@ -25,6 +25,7 @@ import org.quartz.impl.matchers.KeyMatcher;
 
 import in.capofila.spring.bot.CheckInJob;
 import in.capofila.spring.bot.CheckInJobListener;
+import in.capofila.spring.commons.CheckinConsts;
 import in.capofila.spring.commons.SchedulerUtils;
 import in.capofila.spring.model.CheckinDetails;
 import in.capofila.spring.model.ScheduledJobs;
@@ -109,8 +110,8 @@ public class CheckinServiceImpl implements CheckinService {
 		return status;
 	}
 
-	public List<ScheduledJobs> getAllJob() {
-		List<ScheduledJobs> schdJobsList = new ArrayList<>();
+	public List<CheckinDetails> getAllJob() {
+		List<CheckinDetails> schdChekcins = new ArrayList<>();
 		try {
 			for (String groupName : sched.getJobGroupNames()) {
 				for (JobKey jobKey : sched.getJobKeys(GroupMatcher.jobGroupEquals(groupName))) {
@@ -119,29 +120,29 @@ public class CheckinServiceImpl implements CheckinService {
 					// get job's trigger
 					List<Trigger> triggers = (List<Trigger>) sched.getTriggersOfJob(jobKey);
 					for (Trigger trigger : triggers) {
-						ScheduledJobs jobs = new ScheduledJobs();
 						Date scheduledTime = trigger.getNextFireTime();
-						logger.debug("Next Schedule time is" + scheduledTime);
-						jobs.setJobName(jobName);
-						jobs.setJobGroup(jobGroup);
-
-						jobs.setScheduledTime(scheduledTime.toString());// scheduledTime.toString());
-						jobs.setJobTriggerName(trigger.getKey().getName());
-						jobs.setJobTriggerGroup(trigger.getKey().getGroup());
 						JobDetail details = sched.getJobDetail(jobKey);
-						jobs.setJobStatus(checkJobState(trigger));
-
 						JobDataMap jdp = details.getJobDataMap();
 						CheckinDetails checkinDetails = (CheckinDetails) jdp.get("checkinDetails");
-						jobs.setCheckinDetails(checkinDetails);
-						schdJobsList.add(jobs);
+						
+						CheckinDetails cd = new CheckinDetails();
+						cd.setJobName(jobName);
+						cd.setJobGroup(jobGroup);
+						cd.setTriggerName(trigger.getKey().getName());
+						cd.setTriggerGroup(trigger.getKey().getGroup());
+						cd.setJobStatus(checkJobState(trigger));						
+						cd.setSheduledTime(scheduledTime.toString());
+						cd.setFirstName(checkinDetails.getFirstName());
+						cd.setLastName(checkinDetails.getLastName());
+						schdChekcins.add(cd);
+						
 					}
 				}
 			}
 		} catch (SchedulerException e) {
 			e.printStackTrace();
 		}
-		return schdJobsList;
+		return schdChekcins;
 	}
 
 	public boolean createJob(CheckinDetails checkinDetails) {
@@ -159,21 +160,8 @@ public class CheckinServiceImpl implements CheckinService {
 			String groupName = "SOUTHWEST";
 			String triggerName = "Trigger-" + detail;
 
-			JobKey jobKey = new JobKey(jobName, groupName);
-
-			JobDataMap jdp = new JobDataMap();
-			jdp.put("checkinDetails", checkinDetails);
-			jdp.put("jobName", jobName);
-			jdp.put("triggerName", triggerName);
-			jdp.put("jobGroup", groupName);
-
-			JobDetail jobDetail = JobBuilder.newJob(CheckInJob.class).withIdentity(jobKey).usingJobData(jdp)
-					.storeDurably().build();
-
 			TimeZone.setDefault(TimeZone.getTimeZone(checkinDetails.getTimeZone()));
-
 			Date startDate = new Date();
-
 			Calendar cal1 = Calendar.getInstance();
 			int year = Integer.parseInt(checkinDetails.getYyyy());
 			int month = Integer.parseInt(checkinDetails.getMonth());
@@ -182,9 +170,23 @@ public class CheckinServiceImpl implements CheckinService {
 			int mm = Integer.parseInt(checkinDetails.getMm());
 			int ss = Integer.parseInt(checkinDetails.getSs());
 			cal1.set(year, month, date, hh, mm, ss);
-
 			startDate = cal1.getTime();
+			
+			//adding more values to checkin data
+			checkinDetails.setJobName(jobName);
+			checkinDetails.setJobGroup(groupName);
+			checkinDetails.setTriggerName(triggerName);
+			checkinDetails.setTriggerGroup(groupName);
+			checkinDetails.setSheduledTime(startDate.toString());
+			
+			JobKey jobKey = new JobKey(jobName, groupName);
+			JobDataMap jdp = new JobDataMap();
+			jdp.put("checkinDetails", checkinDetails);
+			
+			JobDetail jobDetail = JobBuilder.newJob(CheckInJob.class).withIdentity(jobKey).usingJobData(jdp)
+					.storeDurably().build();
 
+			
 			logger.debug("Start date is " + startDate);
 
 			
@@ -196,18 +198,16 @@ public class CheckinServiceImpl implements CheckinService {
 			  .withMisfireHandlingInstructionFireAndProceed()).usingJobData(jdp).forJob(
 			  jobDetail).build();
 			 
-
-			/*SimpleTrigger trigger = (SimpleTrigger) TriggerBuilder.newTrigger().withIdentity(triggerName, groupName)
-					.startAt(startDate) // some Date
-					.forJob(jobDetail) // identify job with name, group strings
-					.build();
-			*/// Listener attached to jobKey
+			// Listener attached to jobKey
 			sched.getListenerManager().addJobListener(new CheckInJobListener(), KeyMatcher.keyEquals(jobKey));
 
-			// sched.addJob(jobDetail, true);
+//			 sched.addJob(jobDetail, true);
 			Date d = sched.scheduleJob(jobDetail, trigger);
 			logger.debug(d.toString());
-			//sched.start();
+			
+			//store database in db
+			DbConnectionService.addCheckinDetails(checkinDetails);
+			
 		} catch (Exception e) {
 			status = false;
 			logger.error(e.getStackTrace());
@@ -226,18 +226,18 @@ public class CheckinServiceImpl implements CheckinService {
 	public static void main(String[] args) {
 		CheckinServiceImpl csi = new CheckinServiceImpl();
 		CheckinDetails checkinDetails = new CheckinDetails();
-		checkinDetails.setConfirmationNumber("SFSAX3");
+		checkinDetails.setConfirmationNumber("SFSAX2");
 		checkinDetails.setFirstName("Ryan");
 		checkinDetails.setLastName("Cortez");
-		checkinDetails.setDateOfMonth("06");
+		checkinDetails.setDateOfMonth("07");
 		checkinDetails.setMonth("01");
 		checkinDetails.setYyyy("2019");
-		checkinDetails.setHh("01");
-		checkinDetails.setMm("43");
+		checkinDetails.setHh("09");
+		checkinDetails.setMm("39");
 		checkinDetails.setSs("00");
 		checkinDetails.setEmail("karamsahu@gmail.com");
 		checkinDetails.setTimeZone("IST");
-		checkinDetails.setApmpm("AM");
+		checkinDetails.setApmpm("PM");
 		checkinDetails.setHh(SchedulerUtils.to24hr(checkinDetails));
 		csi.createJob(checkinDetails);
 //		System.out.println(csi.getAllJob().toString());
@@ -259,5 +259,6 @@ public class CheckinServiceImpl implements CheckinService {
 		 * System.out.println("Start date is " +startDate);
 		 */
 	}
-
+	
+	
 }

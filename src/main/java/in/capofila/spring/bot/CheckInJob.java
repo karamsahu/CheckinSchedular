@@ -5,9 +5,9 @@ import javax.ws.rs.core.Response;
 import org.apache.log4j.Logger;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
+import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.quartz.JobKey;
 
 import in.capofila.spring.model.CheckinDetails;
 
@@ -19,19 +19,20 @@ public class CheckInJob implements Job {
 	@Override
 	public void execute(JobExecutionContext context) throws JobExecutionException {
 
-		JobKey key = context.getJobDetail().getKey();
+		JobDetail job = context.getJobDetail();
+		String startTime = job.getJobDataMap().getString("startDate");
 
 		JobDataMap dataMap = context.getJobDetail().getJobDataMap();
 		CheckinDetails checkinDetails = (CheckinDetails) dataMap.get("checkinDetails");
 		WebRobot rb = new WebRobot();
 		try {
-			Response submitResult = rb.submittingForm(checkinDetails);
+			Response submitResult = rb.submittingForm(checkinDetails,startTime);
 //			String result = parseResponse(submitResult);
 //			context.setResult(result);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		logger.debug("Job executed completed for job "+key+"with following details "+checkinDetails.toString());
+		logger.debug("Job executed completed for job "+job.getKey()+"with following details "+checkinDetails.toString());
 	}
 
 	private String parseResponse(Response submitResult) {
