@@ -204,7 +204,9 @@ public class CheckinServiceImpl implements CheckinService {
 //			 sched.addJob(jobDetail, true);
 			Date d = sched.scheduleJob(jobDetail, trigger);
 			logger.debug(d.toString());
+			checkinDetails.setJobStatus(CheckinConsts.SCHEDULED);
 			
+			logger.info("New Job scheduled with details"+checkinDetails.toString());
 			//store database in db
 			DbConnectionService.addCheckinDetails(checkinDetails);
 			
@@ -222,6 +224,10 @@ public class CheckinServiceImpl implements CheckinService {
 		// TODO Auto-generated method stub
 		return false;
 	}
+	
+	public List<CheckinDetails> getAllJobDetails(){
+		return DbConnectionService.getCheckinDetails();
+	}
 
 	public static void main(String[] args) {
 		CheckinServiceImpl csi = new CheckinServiceImpl();
@@ -229,11 +235,11 @@ public class CheckinServiceImpl implements CheckinService {
 		checkinDetails.setConfirmationNumber("SFSAX2");
 		checkinDetails.setFirstName("Ryan");
 		checkinDetails.setLastName("Cortez");
-		checkinDetails.setDateOfMonth("07");
+		checkinDetails.setDateOfMonth("08");
 		checkinDetails.setMonth("01");
 		checkinDetails.setYyyy("2019");
 		checkinDetails.setHh("09");
-		checkinDetails.setMm("39");
+		checkinDetails.setMm("26");
 		checkinDetails.setSs("00");
 		checkinDetails.setEmail("karamsahu@gmail.com");
 		checkinDetails.setTimeZone("IST");

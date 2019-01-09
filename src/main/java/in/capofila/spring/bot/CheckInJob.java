@@ -26,7 +26,7 @@ public class CheckInJob implements Job {
 		CheckinDetails checkinDetails = (CheckinDetails) dataMap.get("checkinDetails");
 		WebRobot rb = new WebRobot();
 		try {
-			Response submitResult = rb.submittingForm(checkinDetails,startTime);
+			Response submitResult = rb.submittingForm(context);
 //			String result = parseResponse(submitResult);
 //			context.setResult(result);
 		} catch (Exception e) {

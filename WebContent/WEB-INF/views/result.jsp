@@ -80,14 +80,16 @@ table.paleBlueRows tfoot td {
 					<tr>
 						<th>CONFIRMATION#</th>
 						<th>NAME</th>
-						<th>EXECUTE AT</th>
+						<th>SCHEDULED TIME</th>
 						<th>EMAIL</th>
-						<th>STATUS</th>
+						<th>CHECKIN STATUS</th>
+						<th>JOB STATUS</th>
 						<th>ACTION</th>
 					</tr>
 				</thead>
 				<tfoot>
 					<tr>
+						<td></td>
 						<td></td>
 						<td></td>
 						<td></td>
@@ -100,12 +102,12 @@ table.paleBlueRows tfoot td {
 					<c:if test="${not empty lists}">
 						<c:forEach var="jobs" items="${lists}">
 							<tr>
-								<td>${jobs.getCheckinDetails().getConfirmationNumber()}</td>
-								<td>${jobs.getCheckinDetails().getFirstName()}
-									${jobs.getCheckinDetails().getLastName()}</td>
-								<td>${jobs.getScheduledTime() }</td>
-								<td>${jobs.getCheckinDetails().getEmail() }</td>
+								<td>${jobs.getConfirmationNumber()}</td>
+								<td>${jobs.getFirstName()} ${jobs.getLastName()}</td>
+								<td>${jobs.getSheduledTime() }</td>
+								<td>${jobs.getEmail() }</td>
 								<td>${jobs.getJobStatus() }</td>
+								<td>${jobs.getSchedularStatus() }</td>
 								<td><a href="<c:url value='/schedule/delete/${jobs.getJobName()}/${jobs.getJobGroup()}'/>"><input
 										type="button" value="Delete"></a></td>
 							</tr>

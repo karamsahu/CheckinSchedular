@@ -14,6 +14,7 @@ import org.quartz.Trigger.TriggerState;
 import in.capofila.spring.commons.CheckinConsts;
 import in.capofila.spring.model.CheckinDetails;
 import in.capofila.spring.model.ScheduledJobs;
+import in.capofila.spring.service.DbConnectionService;
 
 public class CheckInJobListener implements JobListener {
 	public static final String LISTENER_NAME = "SouthWestCheckinJobListner";
@@ -45,33 +46,17 @@ public class CheckInJobListener implements JobListener {
 		try {
 			JobDetail jobDetails = context.getJobDetail();
 			String jobName = jobDetails.getKey().toString();
+			
 			CheckinDetails checkinDetails = (CheckinDetails) jobDetails.getJobDataMap().get("checkinDetails");
+			
 			logger.debug("Job : " + jobName + " is finished..." + context.getRefireCount());
-			Trigger trigger = context.getTrigger();
-			TriggerState triggerState = context.getScheduler().getTriggerState(trigger.getKey());
-			if (triggerState.equals(TriggerState.NORMAL)) {
-				ScheduledJobs jobs = new ScheduledJobs();
-				jobs.setJobStatus(CheckinConsts.SCHEDULED);
-				jobs.setJobName(jobName);
-				jobs.setJobGroup(jobDetails.getKey().getGroup());
-				jobs.setJobTriggerName(trigger.getKey().getName());
-				jobs.setJobTriggerGroup(trigger.getKey().getGroup());
-				context.setResult(jobs);
-			}
-
-			int refireCount = context.getRefireCount();
+			
 			Date actualFireTime = context.getFireTime();
-			long jobExecutionDuration = context.getJobRunTime();
-			Date plannedJobExecutionTime = context.getScheduledFireTime();
 
-			logger.info("Job execution details " + checkinDetails + refireCount + actualFireTime + jobExecutionDuration
-					+ plannedJobExecutionTime);
-			/*
-			 * EmailUtil.sendEmail(checkinDetails.getEmail(),
-			 * "Flight Checkin Status Details",
-			 * SchedulerUtils.emailFormatterVerbose(checkinDetails, refireCount,
-			 * actualFireTime, jobExecutionDuration, plannedJobExecutionTime));
-			 */
+			
+			checkinDetails.setActualCheckinTime(actualFireTime.toString());
+			checkinDetails.setJobStatus(CheckinConsts.COMPLETED);
+			DbConnectionService.addCheckinDetails(checkinDetails);
 		} catch (Exception e) {
 			logger.error(e);
 		}

@@ -26,7 +26,17 @@ public class CheckinDetails implements Serializable {
 	private String emailStatus = CheckinConsts.SUBSCRIBED_NO;
 	private String actualCheckinTime;
 	private String sheduledTime;
+	private String schedularStatus;
 	private Integer id;
+	
+	public String getSchedularStatus() {
+		return schedularStatus;
+	}
+	
+	public void setSchedularStatus(String schedularStatus) {
+		this.schedularStatus = schedularStatus;
+	}
+	
 	public void setId(Integer id) {
 		this.id = id;
 	}
@@ -34,7 +44,6 @@ public class CheckinDetails implements Serializable {
 	public Integer getId() {
 		return id;
 	}
-	
 	
 	public String getJobGroup() {
 		return jobGroup;

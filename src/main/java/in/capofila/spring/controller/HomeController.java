@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.sun.media.jfxmedia.logging.Logger;
+
 import in.capofila.spring.model.CheckinDetails;
 import in.capofila.spring.model.ScheduledJobs;
 import in.capofila.spring.model.User;
@@ -69,12 +71,13 @@ public class HomeController {
 
 	@RequestMapping(value = "/schedule/get", method = RequestMethod.GET)
 	public ModelAndView listCheckinEvent(CheckinDetails checkinDetails, Model model) {
-		List<CheckinDetails> allScheduledJobs = checkinservice.getAllJob();
+		List<CheckinDetails> allScheduledJobs = checkinservice.getAllJobDetails();
+		System.out.println(allScheduledJobs.toString());
 		ModelAndView modelview = new ModelAndView("result");
 		modelview.addObject("lists", allScheduledJobs);
 		return modelview;
 	}
-
+	
 	@RequestMapping(value = "/schedule/delete/{jobName}/{groupName}", method = RequestMethod.GET)
 	public ModelAndView deleteCheckinEvent(@PathVariable String jobName, @PathVariable String groupName) {
 		checkinservice.cancellJob(jobName, groupName);

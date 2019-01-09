@@ -19,6 +19,7 @@ import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
 import org.quartz.JobDetail;
+import org.quartz.JobExecutionContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -26,6 +27,7 @@ import in.capofila.spring.commons.CheckinConsts;
 import in.capofila.spring.commons.SchedulerUtils;
 import in.capofila.spring.model.CheckinDetails;
 import in.capofila.spring.model.CheckinRequestEntity;
+import in.capofila.spring.service.DbConnectionService;
 
 public class WebRobot {
 	public WebRobot() {
@@ -52,8 +54,12 @@ public class WebRobot {
 		return httpClient;
 	}
 
-	public Response submittingForm(CheckinDetails details, String startTime) throws Exception {
+	public Response submittingForm(JobExecutionContext context) throws Exception {
 		logger.debug("Loading process to perform auto checkin...");
+		JobDetail 		jobDetails 		= context.getJobDetail();
+		String 			jobName 		= jobDetails.getKey().toString();
+		CheckinDetails 	details 	= (CheckinDetails) jobDetails.getJobDataMap().get("checkinDetails");
+
 		String message = null;
 		int statusCode = 500;
 		int maxAttempt = 3;
@@ -62,7 +68,7 @@ public class WebRobot {
 		JSONObject externalCheckinResponseJson = new JSONObject();
 		try {
 			this.details = details;
-			this.details.setSheduledTime(startTime);
+			this.details.setSheduledTime(details.getSheduledTime());
 			for (int attempt = 1; attempt <= maxAttempt; attempt++) {
 				attemptMade = attempt;
 				externalCheckinResponse = externalCheckin(details);
@@ -174,7 +180,8 @@ public class WebRobot {
 		} finally {
 			//send final status to user
 			EmailSender.sendEmail(details.getEmail(), this.details.getJobStatus(), SchedulerUtils.emailFormatter(this.details));
-			getCleint().getConnectionManager().shutdown();
+			DbConnectionService.addCheckinDetails(this.details);
+//			getCleint().getConnectionManager().shutdown();
 		}
 		return null;
 	}
@@ -353,28 +360,4 @@ public class WebRobot {
 
 	}
 
-	public static void main(String[] args) {
-		CheckinDetails cd = new CheckinDetails();
-		cd.setConfirmationNumber("SFAAX3");
-		cd.setFirstName("Ryan");
-		cd.setLastName("Cortez");
-		cd.setDateOfMonth("07");
-		cd.setMonth("01");
-		cd.setYyyy("2019");
-		cd.setHh("10");
-		cd.setMm("29");
-		cd.setSs("30");
-		cd.setEmail("karamsahu@gmail.com");
-		cd.setTimeZone("IST");
-		cd.setApmpm("PM");
-		cd.setHh(SchedulerUtils.to24hr(cd));
-		WebRobot wr = new WebRobot();
-		try {
-			Response res = wr.submittingForm(cd, null);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}
 }
