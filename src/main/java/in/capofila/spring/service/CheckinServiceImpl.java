@@ -101,6 +101,7 @@ public class CheckinServiceImpl implements CheckinService {
 		try {
 			JobKey key = JobKey.jobKey(jobName, groupName);
 			sched.getJobDetail(key);
+			DbConnectionService.deleteCheckinDetails(key.getName());
 			status = sched.deleteJob(key);
 
 		} catch (SchedulerException e) {
@@ -110,7 +111,7 @@ public class CheckinServiceImpl implements CheckinService {
 		return status;
 	}
 
-	public List<CheckinDetails> getAllJob() {
+	/*public List<CheckinDetails> getAllJob() {
 		List<CheckinDetails> schdChekcins = new ArrayList<>();
 		try {
 			for (String groupName : sched.getJobGroupNames()) {
@@ -143,7 +144,7 @@ public class CheckinServiceImpl implements CheckinService {
 			e.printStackTrace();
 		}
 		return schdChekcins;
-	}
+	}*/
 
 	public boolean createJob(CheckinDetails checkinDetails) {
 		logger.debug("Create job process satarted. with " + checkinDetails);

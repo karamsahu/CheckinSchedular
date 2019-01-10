@@ -60,7 +60,7 @@ public class HomeController {
 		checkinservice = new CheckinServiceImpl();
 		boolean status = checkinservice.createJob(checkinDetails);
 
-		List<CheckinDetails> allScheduledJobs = checkinservice.getAllJob();
+		List<CheckinDetails> allScheduledJobs = checkinservice.getAllJobDetails();
 		System.out.println(allScheduledJobs.toString());
 		// model.addAttribute(allScheduledJobs);
 		ModelAndView modelview = new ModelAndView("result");
@@ -81,7 +81,7 @@ public class HomeController {
 	@RequestMapping(value = "/schedule/delete/{jobName}/{groupName}", method = RequestMethod.GET)
 	public ModelAndView deleteCheckinEvent(@PathVariable String jobName, @PathVariable String groupName) {
 		checkinservice.cancellJob(jobName, groupName);
-		List<CheckinDetails> allScheduledJobs = checkinservice.getAllJob();
+		List<CheckinDetails> allScheduledJobs = checkinservice.getAllJobDetails();
 		ModelAndView modelview = new ModelAndView("result");
 		modelview.addObject("lists", allScheduledJobs);
 		return modelview;

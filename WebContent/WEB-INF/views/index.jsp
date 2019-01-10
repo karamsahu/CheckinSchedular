@@ -261,10 +261,10 @@
 						<select required="true" class="element select large" id="timeZone"
 							name="timeZone">
 							<option value="" selected="selected">-- Select--</option>
-							<option value="EST">EST	EASTERN  STANDARD TIME 	UTC - 5</option>
-							<option value="CST">CST	CENTRAL  STANDARD TIME	UTC - 6</option>
-							<option value="MST">MST	MOUNTAIN STANDARD TIME	UTC - 7</option>
-							<option value="PST">PST	PACIFIC  STANDARD TIME	UTC - 8</option>
+							<option value="America/New_York">EST	EASTERN  STANDARD TIME 	UTC - 5</option>
+							<option value="America/Chicago">CST	CENTRAL  STANDARD TIME	UTC - 6</option>
+							<option value="America/Denver">MST	MOUNTAIN STANDARD TIME	UTC - 7</option>
+							<option value="America/Los_Angeles">PST	PACIFIC  STANDARD TIME	UTC - 8</option>
 							<option value="IST">IST	INDIAN   STANDARD TIME	GMT - 5.30</option>
 						</select>
 					</div>

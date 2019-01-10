@@ -1,5 +1,6 @@
 package in.capofila.spring.service;
 
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
@@ -11,14 +12,17 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TimeZone;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.log4j.Logger;
+import org.sqlite.SQLiteException;
 
 import in.capofila.spring.model.CheckinDetails;
 
 public class DbConnectionService {
 	static Logger logger = Logger.getLogger(DbConnectionService.class);
 	private static Connection conn = null;
+	private AtomicBoolean dbStatus = new AtomicBoolean();
 
 	/**
 	 * Connect to a sample database
@@ -27,15 +31,35 @@ public class DbConnectionService {
 	 */
 	private static Connection connect() {
 		try {
-			String url = "jdbc:sqlite:C:\\Users\\karam\\Documents\\db\\application.db";
+			// String url = "jdbc:sqlite:C:\\Users\\karam\\Documents\\db\\application.db";
+
 			if (conn == null || conn.isClosed()) {
 				Class.forName("org.sqlite.JDBC");
-				conn = DriverManager.getConnection(url);
+				//String ssa = System.getProperty("user.home"); //System.getProperty("catalina.base");
+				String ssa = "/home/karamsahu";
+				logger.info("Current relative path is: " + ssa);
+				String dbPath = ssa + "/application.db";
+				conn = DriverManager.getConnection("jdbc:sqlite:" + dbPath);// DbConnectionService.class.getResource("/").getPath()
+																			// + "/application.db");
+				
+				
+				String dbScemaSql = "BEGIN TRANSACTION;\r\n" + "CREATE TABLE IF NOT EXISTS `checkin_details` (\r\n"
+						+ "	`id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\r\n"
+						+ "	`confirmation_number`	TEXT,\r\n" + "	`first_name`	TEXT,\r\n"
+						+ "	`last_name`	TEXT,\r\n" + "	`timestamp`	TEXT,\r\n" + "	`application`	TEXT,\r\n"
+						+ "	`site`	TEXT,\r\n" + "	`job_name`	TEXT,\r\n" + "	`job_group`	TEXT,\r\n"
+						+ "	`trigger_name`	TEXT,\r\n" + "	`trigger_group`	TEXT,\r\n" + "	`job_status`	TEXT,\r\n"
+						+ "	`attempt_made`	TEXT,\r\n" + "	`email_status`	TEXT,\r\n"
+						+ "	`actual_checkin_time`	TEXT,\r\n" + "	`scheduled_time`	TEXT,\r\n"
+						+ "	`email`	TEXT,\r\n" + "	`scheduler_status`	TEXT\r\n" + ");COMMIT;\r\n";
+				int var = conn.createStatement().executeUpdate(dbScemaSql);
 			}
 		} catch (SQLException e) {
 			logger.error("Database connection error ", e);
 		} catch (ClassNotFoundException e) {
 			logger.error("Database JDBC Driver Manager error", e);
+		} finally {
+
 		}
 		return conn;
 	}
@@ -97,7 +121,7 @@ public class DbConnectionService {
 			int result = ps.executeUpdate();
 
 			if (result > 0) {
-				logger.debug("saved one scheduled " + cd.toString());
+				logger.debug("saved "+result+" scheduled " + cd.toString());
 			}
 			ps.close();
 		} catch (SQLException e) {
@@ -115,9 +139,7 @@ public class DbConnectionService {
 		String sql = "select * from checkin_details";
 		List<CheckinDetails> checkinList = new ArrayList<>();
 		CheckinDetails checkinDetails = new CheckinDetails();
-		try (
-				Statement stmt = connect().createStatement();
-				ResultSet rs = stmt.executeQuery(sql)) {
+		try (Statement stmt = connect().createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
 			while (rs.next()) {
 				checkinDetails.setId(rs.getInt("id"));
 				checkinDetails.setConfirmationNumber(rs.getString("confirmation_number"));
@@ -235,6 +257,27 @@ public class DbConnectionService {
 		return checkinDetails;
 	}
 
+	public static void deleteCheckinDetails(String name) {
+		String sql = "delete from checkin_details where job_name = '" + name + "'";
+		CheckinDetails checkinDetails = new CheckinDetails();
+		try {
+			Statement stmt = connect().createStatement();
+			int rs = stmt.executeUpdate(sql);
+			if(rs > 0) {
+				logger.debug("job successfully deleted");
+			}
+			logger.debug("Getting job by naame and Found following entries " + checkinDetails);
+		} catch (SQLException e) {
+			logger.error("Exception occured while adding new checkin details", e);
+		} finally {
+			try {
+				connect().close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
 	public static void main(String[] args) {
 		CheckinDetails cd = new CheckinDetails();
 		cd.setConfirmationNumber("SSDFSD");
@@ -244,7 +287,8 @@ public class DbConnectionService {
 		cd.setTimeZone("IST");
 		// addCheckinDetails(cd);
 //		getCheckinDetails();
-		//CheckinDetails cs = getJobDetailsByJobName("demo");
-		getCheckinDetails();
-	}	
+		// CheckinDetails cs = getJobDetailsByJobName("demo");
+		System.out.println(getCheckinDetails());
+	}
+
 }
