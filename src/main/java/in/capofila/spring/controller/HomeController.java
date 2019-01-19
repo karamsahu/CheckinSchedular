@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
@@ -13,15 +14,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.sun.media.jfxmedia.logging.Logger;
-
 import in.capofila.spring.model.CheckinDetails;
-import in.capofila.spring.model.ScheduledJobs;
 import in.capofila.spring.model.User;
 import in.capofila.spring.service.CheckinServiceImpl;
 
 @Controller
 public class HomeController {
+	Logger logger = Logger.getLogger(HomeController.class);
 	CheckinServiceImpl checkinservice = new CheckinServiceImpl();
 	/**
 	 * Simply selects the home view to render by returning its name.
@@ -31,7 +30,7 @@ public class HomeController {
 	}
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String home(Locale locale, Model model) {
-		System.out.println("Home Page Requested, locale = " + locale);
+		logger.info("Home Page Requested, locale = " + locale);
 		Date date = new Date();
 		DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, locale);
 		String formattedDate = dateFormat.format(date);
@@ -46,7 +45,7 @@ public class HomeController {
 
 	@RequestMapping(value = "/validate", method = RequestMethod.POST)
 	public String user(@Validated User user, Model model) {
-		System.out.println(user.getPassword());
+		logger.info(user.getPassword());
 		if (user.getPassword().equals("welcome2019")) {
 			return "index";
 		} else {
@@ -61,7 +60,7 @@ public class HomeController {
 		boolean status = checkinservice.createJob(checkinDetails);
 
 		List<CheckinDetails> allScheduledJobs = checkinservice.getAllJobDetails();
-		System.out.println(allScheduledJobs.toString());
+		logger.info(allScheduledJobs.toString());
 		// model.addAttribute(allScheduledJobs);
 		ModelAndView modelview = new ModelAndView("result");
 		modelview.addObject("lists", allScheduledJobs);
@@ -72,7 +71,7 @@ public class HomeController {
 	@RequestMapping(value = "/schedule/get", method = RequestMethod.GET)
 	public ModelAndView listCheckinEvent(CheckinDetails checkinDetails, Model model) {
 		List<CheckinDetails> allScheduledJobs = checkinservice.getAllJobDetails();
-		System.out.println(allScheduledJobs.toString());
+		logger.info(allScheduledJobs.toString());
 		ModelAndView modelview = new ModelAndView("result");
 		modelview.addObject("lists", allScheduledJobs);
 		return modelview;

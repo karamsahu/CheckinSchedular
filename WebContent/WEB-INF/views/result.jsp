@@ -100,15 +100,15 @@ table.paleBlueRows tfoot td {
 				</tfoot>
 				<tbody>
 					<c:if test="${not empty lists}">
-						<c:forEach var="jobs" items="${lists}">
+						<c:forEach var="checkinDetails" items="${lists}">
 							<tr>
-								<td>${jobs.getConfirmationNumber()}</td>
-								<td>${jobs.getFirstName()} ${jobs.getLastName()}</td>
-								<td>${jobs.getSheduledTime() }</td>
-								<td>${jobs.getEmail() }</td>
-								<td>${jobs.getJobStatus() }</td>
-								<td>${jobs.getSchedularStatus() }</td>
-								<td><a href="<c:url value='/schedule/delete/${jobs.getJobName()}/${jobs.getJobGroup()}'/>"><input
+								<td>${checkinDetails.getConfirmationNumber()}</td>
+								<td>${checkinDetails.getFirstName()} ${jobs.getLastName()}</td>
+								<td>${checkinDetails.getSheduledTime() }</td>
+								<td>${checkinDetails.getEmail() }</td>
+								<td>${checkinDetails.getJobStatus() }</td>
+								<td>${checkinDetails.getSchedularStatus() }</td>
+								<td><a href="<c:url value='/schedule/delete/${checkinDetails.getJobName()}/${checkinDetails.getJobGroup()}'/>"><input
 										type="button" value="Delete"></a></td>
 							</tr>
 						</c:forEach>

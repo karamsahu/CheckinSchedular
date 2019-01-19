@@ -1,6 +1,5 @@
 package in.capofila.spring.service;
 
-import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
@@ -11,11 +10,11 @@ import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.log4j.Logger;
-import org.sqlite.SQLiteException;
 
 import in.capofila.spring.model.CheckinDetails;
 
@@ -35,13 +34,15 @@ public class DbConnectionService {
 
 			if (conn == null || conn.isClosed()) {
 				Class.forName("org.sqlite.JDBC");
-				//String ssa = System.getProperty("user.home"); //System.getProperty("catalina.base");
 				String ssa = "/home/karamsahu";
+				ssa ="C:\\Users\\karam\\eclipse-upwork\\CheckinSchedular";
 				logger.info("Current relative path is: " + ssa);
-				String dbPath = ssa + "/application.db";
-				conn = DriverManager.getConnection("jdbc:sqlite:" + dbPath);// DbConnectionService.class.getResource("/").getPath()
-																			// + "/application.db");
+				String path =  "/var/lib/tomcat8/webapps/CheckinScheduler/resources";//System.getenv("CATALINA_HOME");
+				//path = ssa;
+				logger.info("databse path is"+path);
 				
+				conn = DriverManager.getConnection("jdbc:sqlite:"+path+"/scheduler.db");// DbConnectionService.class.getResource("/").getPath()
+																			// + "/application.db");
 				
 				String dbScemaSql = "BEGIN TRANSACTION;\r\n" + "CREATE TABLE IF NOT EXISTS `checkin_details` (\r\n"
 						+ "	`id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\r\n"
@@ -91,7 +92,7 @@ public class DbConnectionService {
 
 		if (cdResult.getId() == null) {
 			sql = insert;
-			logger.debug("No exsisting job found for Job Name = " + cd.getJobName());
+			logger.debug("No sfexsisting job found for Job Name = " + cd.getJobName());
 			logger.debug("Inserting record" + cd.toString());
 			logger.debug(sql);
 		} else {
@@ -126,21 +127,15 @@ public class DbConnectionService {
 			ps.close();
 		} catch (SQLException e) {
 			logger.error("Exception occured while adding new checkin details", e);
-		} finally {
-			try {
-				connect().close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
 		}
 	}
 
 	public static List<CheckinDetails> getCheckinDetails() {
 		String sql = "select * from checkin_details";
 		List<CheckinDetails> checkinList = new ArrayList<>();
-		CheckinDetails checkinDetails = new CheckinDetails();
 		try (Statement stmt = connect().createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
 			while (rs.next()) {
+				CheckinDetails checkinDetails = new CheckinDetails();
 				checkinDetails.setId(rs.getInt("id"));
 				checkinDetails.setConfirmationNumber(rs.getString("confirmation_number"));
 				checkinDetails.setFirstName(rs.getString("first_name"));
@@ -165,12 +160,6 @@ public class DbConnectionService {
 			stmt.close();
 		} catch (SQLException e) {
 			logger.error("Exception occured while adding new checkin details", e);
-		} finally {
-			try {
-				connect().close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
 		}
 		return checkinList;
 	}
@@ -207,18 +196,12 @@ public class DbConnectionService {
 			stmt.close();
 		} catch (SQLException e) {
 			logger.error("Exception occured while adding new checkin details", e);
-		} finally {
-			try {
-				conn.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
+		} 
 		return checkinDetails;
 	}
 
 	public static CheckinDetails getJobDetailsByJobName(String jobName) {
-		String sql = "select * from checkin_details";
+		String sql = "select * from checkin_details where job_name='"+jobName+"'";
 		CheckinDetails checkinDetails = new CheckinDetails();
 		try {
 			Statement stmt = connect().createStatement();
@@ -247,13 +230,7 @@ public class DbConnectionService {
 			stmt.close();
 		} catch (SQLException e) {
 			logger.error("Exception occured while adding new checkin details", e);
-		} finally {
-			try {
-				connect().close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
+		} 
 		return checkinDetails;
 	}
 
@@ -269,13 +246,7 @@ public class DbConnectionService {
 			logger.debug("Getting job by naame and Found following entries " + checkinDetails);
 		} catch (SQLException e) {
 			logger.error("Exception occured while adding new checkin details", e);
-		} finally {
-			try {
-				connect().close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
+		} 
 	}
 
 	public static void main(String[] args) {

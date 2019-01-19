@@ -70,6 +70,7 @@ public class WebRobot {
 			this.details = details;
 			this.details.setSheduledTime(details.getSheduledTime());
 			for (int attempt = 1; attempt <= maxAttempt; attempt++) {
+				Thread.sleep(1000*60);
 				attemptMade = attempt;
 				externalCheckinResponse = externalCheckin(details);
 				message = EntityUtils.toString(externalCheckinResponse.getEntity(), "UTF-8");
@@ -177,9 +178,10 @@ public class WebRobot {
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("Checkin failed due to and exception " + e.getCause() + e.getLocalizedMessage());
+			this.details.setSchedularStatus("Failed");
 		} finally {
 			//send final status to user
-			EmailSender.sendEmail(details.getEmail(), this.details.getJobStatus(), SchedulerUtils.emailFormatter(this.details));
+			//EmailSender.sendEmail(details.getEmail(), this.details.getJobStatus(), SchedulerUtils.emailFormatter(this.details));
 			DbConnectionService.addCheckinDetails(this.details);
 //			getCleint().getConnectionManager().shutdown();
 		}

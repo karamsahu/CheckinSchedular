@@ -44,8 +44,13 @@ public class SchedulerUtils {
 		sb.append("</td></tr>");
 
 		sb.append(
-				"<tr><th style='bgcolor:#DCDCDC; border: 1px solid black;padding: 5px;text-align: left;'>Status</th><td>");
+				"<tr><th style='bgcolor:#DCDCDC; border: 1px solid black;padding: 5px;text-align: left;'>Check-in Status</th><td>");
 		sb.append(details.getJobStatus());
+		sb.append("</td></tr>");
+		
+		sb.append(
+				"<tr><th style='bgcolor:#DCDCDC; border: 1px solid black;padding: 5px;text-align: left;'>Schedular Status</th><td>");
+		sb.append(details.getSchedularStatus());
 		sb.append("</td></tr>");
 
 		sb.append(

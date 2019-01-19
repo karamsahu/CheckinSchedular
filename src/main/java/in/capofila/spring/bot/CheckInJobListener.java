@@ -3,17 +3,14 @@ package in.capofila.spring.bot;
 import java.util.Date;
 
 import org.apache.log4j.Logger;
-import org.quartz.Job;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.JobListener;
-import org.quartz.Trigger;
-import org.quartz.Trigger.TriggerState;
 
 import in.capofila.spring.commons.CheckinConsts;
+import in.capofila.spring.commons.SchedulerUtils;
 import in.capofila.spring.model.CheckinDetails;
-import in.capofila.spring.model.ScheduledJobs;
 import in.capofila.spring.service.DbConnectionService;
 
 public class CheckInJobListener implements JobListener {
@@ -45,18 +42,18 @@ public class CheckInJobListener implements JobListener {
 	public void jobWasExecuted(JobExecutionContext context, JobExecutionException jobException) {
 		try {
 			JobDetail jobDetails = context.getJobDetail();
-			String jobName = jobDetails.getKey().toString();
-			
+			String jobName = jobDetails.getKey().toString();	
 			CheckinDetails checkinDetails = (CheckinDetails) jobDetails.getJobDataMap().get("checkinDetails");
 			
 			logger.debug("Job : " + jobName + " is finished..." + context.getRefireCount());
 			
 			Date actualFireTime = context.getFireTime();
-
-			
 			checkinDetails.setActualCheckinTime(actualFireTime.toString());
-			checkinDetails.setJobStatus(CheckinConsts.COMPLETED);
-			DbConnectionService.addCheckinDetails(checkinDetails);
+			checkinDetails.setSchedularStatus(CheckinConsts.COMPLETED);
+			DbConnectionService.addCheckinDetails(checkinDetails); //this is to update the checkin details with status
+			EmailSender.sendEmail(checkinDetails.getEmail(), "FINAL STATUS of "+checkinDetails.getConfirmationNumber(), SchedulerUtils.emailFormatter(checkinDetails));
+			logger.debug("deleteing finished job"+jobDetails);
+			context.getScheduler().deleteJob(jobDetails.getKey());
 		} catch (Exception e) {
 			logger.error(e);
 		}

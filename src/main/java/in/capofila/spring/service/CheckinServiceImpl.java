@@ -1,6 +1,5 @@
 package in.capofila.spring.service;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -20,15 +19,14 @@ import org.quartz.Trigger;
 import org.quartz.Trigger.TriggerState;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
-import org.quartz.impl.matchers.GroupMatcher;
 import org.quartz.impl.matchers.KeyMatcher;
 
 import in.capofila.spring.bot.CheckInJob;
 import in.capofila.spring.bot.CheckInJobListener;
+import in.capofila.spring.bot.EmailSender;
 import in.capofila.spring.commons.CheckinConsts;
 import in.capofila.spring.commons.SchedulerUtils;
 import in.capofila.spring.model.CheckinDetails;
-import in.capofila.spring.model.ScheduledJobs;
 
 public class CheckinServiceImpl implements CheckinService {
 	final SchedulerFactory sf = new StdSchedulerFactory();
@@ -152,7 +150,7 @@ public class CheckinServiceImpl implements CheckinService {
 		try {
 			if (sched.isShutdown() || sched.isInStandbyMode()) {
 				sched.start();
-				logger.debug("starting scheudar now.s");
+				logger.debug("Schedular is booting..");
 			}
 			String detail = checkinDetails.getConfirmationNumber() + "-" + checkinDetails.getFirstName() + "-"
 					+ checkinDetails.getLastName();
@@ -202,15 +200,18 @@ public class CheckinServiceImpl implements CheckinService {
 			// Listener attached to jobKey
 			sched.getListenerManager().addJobListener(new CheckInJobListener(), KeyMatcher.keyEquals(jobKey));
 
-//			 sched.addJob(jobDetail, true);
+			//sched.addJob(jobDetail, true);
 			Date d = sched.scheduleJob(jobDetail, trigger);
 			logger.debug(d.toString());
 			checkinDetails.setJobStatus(CheckinConsts.SCHEDULED);
+			checkinDetails.setSchedularStatus(CheckinConsts.CREATED);
 			
 			logger.info("New Job scheduled with details"+checkinDetails.toString());
 			//store database in db
 			DbConnectionService.addCheckinDetails(checkinDetails);
-			
+			//notify user about job creation
+			logger.info("Notifying clients of job creations");
+			EmailSender.sendEmail(checkinDetails.getEmail(), checkinDetails.getJobStatus(), SchedulerUtils.emailFormatter(checkinDetails));
 		} catch (Exception e) {
 			status = false;
 			logger.error(e.getStackTrace());
