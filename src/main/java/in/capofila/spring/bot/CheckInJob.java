@@ -20,19 +20,18 @@ public class CheckInJob implements Job {
 	public void execute(JobExecutionContext context) throws JobExecutionException {
 
 		JobDetail job = context.getJobDetail();
-		String startTime = job.getJobDataMap().getString("startDate");
-
 		JobDataMap dataMap = context.getJobDetail().getJobDataMap();
 		CheckinDetails checkinDetails = (CheckinDetails) dataMap.get("checkinDetails");
 		WebRobot rb = new WebRobot();
 		try {
 			Response submitResult = rb.submittingForm(context);
-//			String result = parseResponse(submitResult);
+			String result = parseResponse(submitResult);
+			logger.debug("Reuslt : "+result);
 //			context.setResult(result);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		logger.debug("Job executed completed for job "+job.getKey()+"with following details "+checkinDetails.toString());
+		logger.debug("Job execution completed for job "+job.getKey()+" with following details "+checkinDetails.toString());
 	}
 
 	private String parseResponse(Response submitResult) {

@@ -70,7 +70,9 @@ public class WebRobot {
 			this.details = details;
 			this.details.setSheduledTime(details.getSheduledTime());
 			for (int attempt = 1; attempt <= maxAttempt; attempt++) {
-				Thread.sleep(1000*60);
+				if(attempt > 1) {
+					Thread.sleep(CheckinConsts.REPEAT_SLEEP);
+				}
 				attemptMade = attempt;
 				externalCheckinResponse = externalCheckin(details);
 				message = EntityUtils.toString(externalCheckinResponse.getEntity(), "UTF-8");
@@ -106,8 +108,6 @@ public class WebRobot {
 					tokenValue = searchResultJson.getString("token");
 					break;
 				}
-				Thread.currentThread().sleep(CheckinConsts.REPEAT_SLEEP);
-
 			} // for ends
 			this.details.setAttemptMade(attemptMade);
 
@@ -293,7 +293,6 @@ public class WebRobot {
 	}
 
 	private boolean emailSubscription(CheckinDetails cd, String travellerIdentity, String tokenValue) {
-		String email = cd.getEmail();
 		boolean status = false;
 
 		// Define a postRequest request
@@ -334,7 +333,8 @@ public class WebRobot {
 		try {
 			userEntity = new StringEntity(entityData.toString());
 			HttpResponse response = getCleint().execute(postRequest);
-			String responseString = EntityUtils.toString(response.getEntity(), "UTF-8");
+			String responseString = EntityUtils.toString(response.getEntity());
+			logger.debug("Respone from server upon inputing email "+responseString);
 			try {
 				resObj = new JSONObject(responseString);
 			} catch (Exception e) {

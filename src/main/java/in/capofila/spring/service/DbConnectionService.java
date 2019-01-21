@@ -38,7 +38,7 @@ public class DbConnectionService {
 				ssa ="C:\\Users\\karam\\eclipse-upwork\\CheckinSchedular";
 				logger.info("Current relative path is: " + ssa);
 				String path =  "/var/lib/tomcat8/webapps/CheckinScheduler/resources";//System.getenv("CATALINA_HOME");
-				//path = ssa;
+				path = ssa;
 				logger.info("databse path is"+path);
 				
 				conn = DriverManager.getConnection("jdbc:sqlite:"+path+"/scheduler.db");// DbConnectionService.class.getResource("/").getPath()
