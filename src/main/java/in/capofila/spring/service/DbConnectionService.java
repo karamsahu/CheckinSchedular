@@ -35,7 +35,7 @@ public class DbConnectionService {
 			if (conn == null || conn.isClosed()) {
 				Class.forName("org.sqlite.JDBC");
 				String ssa = "/home/karamsahu";
-				ssa ="C:\\Users\\karam\\eclipse-upwork\\CheckinSchedular";
+				//ssa ="C:\\Users\\karam\\eclipse-upwork\\CheckinSchedular";
 				logger.info("Current relative path is: " + ssa);
 				String path =  "/var/lib/tomcat8/webapps/CheckinScheduler/resources";//System.getenv("CATALINA_HOME");
 				path = ssa;

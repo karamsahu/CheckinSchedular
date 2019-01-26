@@ -24,10 +24,13 @@ public class CheckInJob implements Job {
 		CheckinDetails checkinDetails = (CheckinDetails) dataMap.get("checkinDetails");
 		WebRobot rb = new WebRobot();
 		try {
-			Response submitResult = rb.submittingForm(context);
+
+			
+			/*Response submitResult = rb.submittingForm(context);
 			String result = parseResponse(submitResult);
-			logger.debug("Reuslt : "+result);
-//			context.setResult(result);
+			logger.debug("Reuslt : "+result);*/
+			CheckinDetails details = rb.submittingFormV2(context);
+			logger.debug("Result : "+details);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

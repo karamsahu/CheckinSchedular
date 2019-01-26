@@ -8,13 +8,17 @@ import java.util.Map;
 
 import javax.ws.rs.core.Response;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
@@ -24,7 +28,6 @@ import org.quartz.JobExecutionContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import in.capofila.spring.commons.CheckinConsts;
-import in.capofila.spring.commons.SchedulerUtils;
 import in.capofila.spring.model.CheckinDetails;
 import in.capofila.spring.model.CheckinRequestEntity;
 import in.capofila.spring.service.DbConnectionService;
@@ -44,21 +47,26 @@ public class WebRobot {
 
 	}
 
-	static DefaultHttpClient httpClient = new DefaultHttpClient();
+	static CloseableHttpClient httpClient;
 
-	private static DefaultHttpClient getCleint() {
-		if (httpClient == null) {
+	private static CloseableHttpClient getCleint() {
+
 			logger.debug("Creating http client now");
-			httpClient = new DefaultHttpClient();
-		}
+			int timeout = 30;
+			RequestConfig config = RequestConfig.custom()
+			  .setConnectTimeout(timeout * 1000)
+			  .setConnectionRequestTimeout(timeout * 1000)
+			  .setSocketTimeout(timeout * 1000).build();
+//			CloseableHttpClient client =  HttpClientBuilder.create().setDefaultRequestConfig(config).build();
+			httpClient = HttpClientBuilder.create().setDefaultRequestConfig(config).build();//HttpClients.createDefault();
 		return httpClient;
 	}
 
 	public Response submittingForm(JobExecutionContext context) throws Exception {
 		logger.debug("Loading process to perform auto checkin...");
-		JobDetail 		jobDetails 		= context.getJobDetail();
-		String 			jobName 		= jobDetails.getKey().toString();
-		CheckinDetails 	details 	= (CheckinDetails) jobDetails.getJobDataMap().get("checkinDetails");
+		JobDetail jobDetails = context.getJobDetail();
+		String jobName = jobDetails.getKey().toString();
+		CheckinDetails details = (CheckinDetails) jobDetails.getJobDataMap().get("checkinDetails");
 
 		String message = null;
 		int statusCode = 500;
@@ -70,7 +78,7 @@ public class WebRobot {
 			this.details = details;
 			this.details.setSheduledTime(details.getSheduledTime());
 			for (int attempt = 1; attempt <= maxAttempt; attempt++) {
-				if(attempt > 1) {
+				if (attempt > 1) {
 					Thread.sleep(CheckinConsts.REPEAT_SLEEP);
 				}
 				attemptMade = attempt;
@@ -180,8 +188,9 @@ public class WebRobot {
 			logger.error("Checkin failed due to and exception " + e.getCause() + e.getLocalizedMessage());
 			this.details.setSchedularStatus("Failed");
 		} finally {
-			//send final status to user
-			//EmailSender.sendEmail(details.getEmail(), this.details.getJobStatus(), SchedulerUtils.emailFormatter(this.details));
+			// send final status to user
+			// EmailSender.sendEmail(details.getEmail(), this.details.getJobStatus(),
+			// SchedulerUtils.emailFormatter(this.details));
 			DbConnectionService.addCheckinDetails(this.details);
 //			getCleint().getConnectionManager().shutdown();
 		}
@@ -195,14 +204,14 @@ public class WebRobot {
 			// object if any
 			HttpGet visitHomepage1 = new HttpGet("https://www.southwest.com");
 			HttpResponse getCallRepons1 = getCleint().execute(visitHomepage1);
-			getCallRepons1.getEntity().consumeContent();
+			EntityUtils.consume(getCallRepons1.getEntity());
 
 			// Send the request; It will immediately return the response in HttpResponse
 			// object if any
 			HttpGet visitHomepage = new HttpGet("https://www.southwest.com/air/check-in/index.html?clk=GSUBNAV-CHCKIN");
 			HttpResponse getCallReponse = getCleint().execute(visitHomepage);
-			getCallReponse.getEntity().consumeContent();
-
+			EntityUtils.consume(getCallRepons1.getEntity());
+			
 			// Define a postRequest request
 			HttpPost postRequest = new HttpPost(
 					"https://www.southwest.com/api/air-checkin/v1/air-checkin/page/air/check-in/review");
@@ -309,11 +318,11 @@ public class WebRobot {
 		postRequest.addHeader("authorization", "null null");
 		postRequest.addHeader("Content-type", "application/json");
 		postRequest.addHeader("origin", "https://www.southwest.com");
-		postRequest.addHeader("referer", "ttps://www.southwest.com/air/check-in/confirmation.html");
+		postRequest.addHeader("referer", "https://www.southwest.com/air/check-in/confirmation.html");
 		postRequest.addHeader("user-agent",
 				"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36");
 		postRequest.addHeader("x-api-key", "l7xx944d175ea25f4b9c903a583ea82a1c4c");
-
+		postRequest.addHeader("x-user-experience-id", "4cbb576c-74a8-4e98-a874-2557c9f79de5");
 		// Set the request post body
 		// {"lang":"en","pageId":"air-check-in-review","appId":"air-check-in","site":"southwest","application":"air-check-in"}
 
@@ -323,7 +332,7 @@ public class WebRobot {
 		entityData.put("confirmationNumber", cd.getConfirmationNumber());
 		entityData.put("deliveryMethod", "EMAIL");
 		entityData.put("destination", cd.getEmail());
-		entityData.put("drinkCouponSelected", "false");
+		entityData.put("drinkCouponSelected", false);
 		entityData.put("site", "southwest");
 		entityData.put("token", tokenValue);
 		entityData.put("travelerIdentity", travellerIdentity);
@@ -334,7 +343,7 @@ public class WebRobot {
 			userEntity = new StringEntity(entityData.toString());
 			HttpResponse response = getCleint().execute(postRequest);
 			String responseString = EntityUtils.toString(response.getEntity());
-			logger.debug("Respone from server upon inputing email "+responseString);
+			logger.debug("Respone from server upon inputing email " + responseString);
 			try {
 				resObj = new JSONObject(responseString);
 			} catch (Exception e) {
@@ -360,6 +369,72 @@ public class WebRobot {
 		postRequest.setEntity(userEntity);
 		return status;
 
+	}
+
+	public CheckinDetails submittingFormV2(JobExecutionContext context) throws Exception {
+		logger.debug("Loading process to perform auto checkin...");
+		JobDetail jobDetails = context.getJobDetail();
+		CheckinDetails details = (CheckinDetails) jobDetails.getJobDataMap().get("checkinDetails");
+		CheckinDetails checkinStatusDetails;
+		int maxAttempt = 3;
+		int attemptMade = 1;
+		try {
+			this.details = details;
+			this.details.setJobStatus(CheckinConsts.PENDING);
+			for (int attempt = 1; attempt <= maxAttempt; attempt++) {
+				attemptMade = attempt;
+				logger.debug("making attempt " + attemptMade);
+				// we will check and allow browser only in case details are correct
+				if (!validCheckin(details)) {
+					Thread.sleep(1000*60);
+					continue;
+				}
+				checkinStatusDetails = WebRobotV2.doCheckIn(details);
+				if (checkinStatusDetails.getJobStatus().equals(CheckinConsts.PENDING)) {
+					logger.debug("Getting status : " + checkinStatusDetails.getJobStatus()
+							+ " Reattempting to checkin for " + attemptMade);
+					if (attemptMade < 3) {
+						checkinStatusDetails = WebRobotV2.doCheckIn(details);
+					}
+					Thread.sleep(CheckinConsts.REPEAT_SLEEP);
+				}
+				if (checkinStatusDetails.getJobStatus().equals(CheckinConsts.CONFIRMED)) {
+					break;
+				}
+				continue;
+			} // for ends
+			this.details.setAttemptMade(attemptMade);
+			if (this.details.getJobStatus().equals(CheckinConsts.PENDING)) {
+				this.details.setJobStatus(CheckinConsts.FAILED);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			DbConnectionService.addCheckinDetails(this.details);
+		}
+		return this.details;
+	}
+
+	private boolean validCheckin(CheckinDetails details2) {
+		try {
+			HttpResponse externalCheckinResponse = externalCheckin(details);
+			int statusCode = externalCheckinResponse.getStatusLine().getStatusCode();
+			HttpEntity entity = externalCheckinResponse.getEntity();
+			String message = EntityUtils.toString(entity, "UTF-8");
+			logger.debug("Step 1 checkin response is " + message);
+			EntityUtils.consume(entity);
+			//getCleint().close();
+			logger.debug("Status code of validation "+statusCode);
+			if (statusCode != 200) {
+				logger.debug("Invalid checkin details or Wrong checkin date time");
+				return false;
+			}
+		} catch (Exception e) {
+			logger.error("Error occured validation checkin details");
+			e.printStackTrace();
+			return false;
+		}
+		return true;
 	}
 
 }
