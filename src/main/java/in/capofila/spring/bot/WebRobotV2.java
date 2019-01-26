@@ -26,11 +26,11 @@ public class WebRobotV2 {
 	public static CheckinDetails doCheckIn(CheckinDetails details) {
 		logger.info("Initializing websimulator..");
 //		String chromeDriverPath = "C:\\Users\\Karam\\Documents\\driver\\chromedriver.exe";
-		String chromeDriverPath = "/var/lib/chromedriver";
+		String chromeDriverPath = "C:\\Users\\karamsahu\\Documents\\chromedriver.exe";//"/var/lib/chromedriver";
 		
 		System.setProperty("webdriver.chrome.driver", chromeDriverPath);
 		ChromeOptions options = new ChromeOptions();
-		options.addArguments("--headless", "--disable-gpu", "--window-size=1920,1200", "--ignore-certificate-errors");
+		//options.addArguments("--headless", "--disable-gpu", "--window-size=1920,1200", "--ignore-certificate-errors");
 		WebDriver driver = new ChromeDriver(options);
 		return doActualWork(driver, details);
 	}

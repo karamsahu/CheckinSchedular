@@ -34,11 +34,11 @@ public class DbConnectionService {
 
 			if (conn == null || conn.isClosed()) {
 				Class.forName("org.sqlite.JDBC");
-				String ssa = "/home/karamsahu";
-				//ssa ="C:\\Users\\karam\\eclipse-upwork\\CheckinSchedular";
+				String ssa = "";
+				ssa ="C:\\Users\\karam\\eclipse-upwork\\CheckinSchedular";
 				logger.info("Current relative path is: " + ssa);
 				String path =  "/var/lib/tomcat8/webapps/CheckinScheduler/resources";//System.getenv("CATALINA_HOME");
-				path = ssa;
+				path = "c:\\Users\\karamsahu\\app";
 				logger.info("databse path is"+path);
 				
 				conn = DriverManager.getConnection("jdbc:sqlite:"+path+"/scheduler.db");// DbConnectionService.class.getResource("/").getPath()
