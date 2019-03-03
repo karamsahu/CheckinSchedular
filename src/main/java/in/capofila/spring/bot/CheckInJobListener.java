@@ -35,6 +35,8 @@ public class CheckInJobListener implements JobListener {
 	@Override
 	public void jobExecutionVetoed(JobExecutionContext context) {
 		// TODO Auto-generated method stub
+		String jobName = context.getJobDetail().getKey().toString();
+		System.out.println("Job : " + jobName + " is vetoed...");
 
 	}
 

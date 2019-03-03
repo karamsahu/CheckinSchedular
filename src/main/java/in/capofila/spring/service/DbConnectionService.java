@@ -10,9 +10,7 @@ import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.TimeZone;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.log4j.Logger;
 
@@ -21,8 +19,6 @@ import in.capofila.spring.model.CheckinDetails;
 public class DbConnectionService {
 	static Logger logger = Logger.getLogger(DbConnectionService.class);
 	private static Connection conn = null;
-	private AtomicBoolean dbStatus = new AtomicBoolean();
-
 	/**
 	 * Connect to a sample database
 	 * 
@@ -30,17 +26,11 @@ public class DbConnectionService {
 	 */
 	private static Connection connect() {
 		try {
-			// String url = "jdbc:sqlite:C:\\Users\\karam\\Documents\\db\\application.db";
-
 			if (conn == null || conn.isClosed()) {
 				Class.forName("org.sqlite.JDBC");
-				String ssa = "";
-				ssa ="C:\\Users\\karam\\eclipse-upwork\\CheckinSchedular";
-				logger.info("Current relative path is: " + ssa);
 				String path =  "/var/lib/tomcat8/webapps/CheckinScheduler/resources";//System.getenv("CATALINA_HOME");
-				path = "c:\\Users\\karamsahu\\app";
+				path = ".";
 				logger.info("databse path is"+path);
-				
 				conn = DriverManager.getConnection("jdbc:sqlite:"+path+"/scheduler.db");// DbConnectionService.class.getResource("/").getPath()
 																			// + "/application.db");
 				
@@ -54,6 +44,7 @@ public class DbConnectionService {
 						+ "	`actual_checkin_time`	TEXT,\r\n" + "	`scheduled_time`	TEXT,\r\n"
 						+ "	`email`	TEXT,\r\n" + "	`scheduler_status`	TEXT\r\n" + ");COMMIT;\r\n";
 				int var = conn.createStatement().executeUpdate(dbScemaSql);
+				logger.info("DB Schema output "+var);
 			}
 		} catch (SQLException e) {
 			logger.error("Database connection error ", e);

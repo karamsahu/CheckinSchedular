@@ -1,7 +1,5 @@
 package in.capofila.spring.bot;
 
-import javax.ws.rs.core.Response;
-
 import org.apache.log4j.Logger;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
@@ -24,11 +22,6 @@ public class CheckInJob implements Job {
 		CheckinDetails checkinDetails = (CheckinDetails) dataMap.get("checkinDetails");
 		WebRobot rb = new WebRobot();
 		try {
-
-			
-			/*Response submitResult = rb.submittingForm(context);
-			String result = parseResponse(submitResult);
-			logger.debug("Reuslt : "+result);*/
 			CheckinDetails details = rb.submittingFormV2(context);
 			logger.debug("Result : "+details);
 		} catch (Exception e) {
@@ -36,20 +29,4 @@ public class CheckInJob implements Job {
 		}
 		logger.debug("Job execution completed for job "+job.getKey()+" with following details "+checkinDetails.toString());
 	}
-
-	private String parseResponse(Response submitResult) {
-		if (submitResult.getStatus() == 200) {
-			return submitResult.getEntity().toString();
-		}
-
-		if (submitResult.getStatus() == 400) {
-			return submitResult.getEntity().toString();
-		}
-		if (submitResult.getStatus() == 500) {
-			return submitResult.getEntity().toString();
-		}
-
-		return submitResult.getEntity().toString();
-	}
-
 }

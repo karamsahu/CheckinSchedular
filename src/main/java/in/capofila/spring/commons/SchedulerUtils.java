@@ -1,6 +1,9 @@
 package in.capofila.spring.commons;
 
+import java.time.Month;
+import java.time.format.TextStyle;
 import java.util.Date;
+import java.util.Locale;
 
 import in.capofila.spring.model.CheckinDetails;
 
@@ -63,6 +66,12 @@ public class SchedulerUtils {
 		sb.append(details.getEmailStatus());
 		sb.append("</td></tr>");
 		
+		sb.append(
+				"<tr><th style='bgcolor:#DCDCDC; border: 1px solid black;padding: 5px;text-align: left;'>TimeZone </th><td>");
+		sb.append(details.getTimeZone());
+		sb.append("</td></tr>");
+		
+		
 		sb.append("</table></body></html>");
 
 		return sb.toString();
@@ -109,6 +118,12 @@ public class SchedulerUtils {
 		sb.append("</td></tr>");
 
 		sb.append(
+				"<tr><th style='bgcolor:#DCDCDC; border: 1px solid black;padding: 5px;text-align: left;'>TimeZone</th><td>");
+		sb.append(details.getTimeZone());
+		sb.append("</td></tr>");
+
+		
+		sb.append(
 				"<tr><th style='bgcolor:#DCDCDC; border: 1px solid black;padding: 5px;text-align: left;'>Attempt Count</th><td>");
 		sb.append(refireCount);
 		sb.append("</td></tr>");
@@ -117,8 +132,6 @@ public class SchedulerUtils {
 				"<tr><th style='bgcolor:#DCDCDC; border: 1px solid black;padding: 5px;text-align: left;'>Actual Checkin time </th><td>");
 		sb.append(actualFireTime);
 		sb.append("</td></tr>");
-		
-		
 		
 		sb.append("</table></body></html>");
 
@@ -171,4 +184,11 @@ public class SchedulerUtils {
 		}
 		return hr;
 	}
+	
+	public static String toMonth(CheckinDetails details) {
+		int monthNumber = Integer.parseInt(details.getMonth());
+		String s = Month.of(monthNumber).getDisplayName(TextStyle.SHORT , Locale.US ).toUpperCase();
+		return s;
+	}
+	
 }

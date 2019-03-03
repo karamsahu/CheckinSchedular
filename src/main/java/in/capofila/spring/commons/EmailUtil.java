@@ -63,7 +63,8 @@ public class EmailUtil {
 			Transport.send(msg);
 			logger.debug("EMail Sent Successfully!!");
 		} catch (Exception e) {
-			logger.debug(e.getStackTrace());
+			logger.debug(e.getMessage());
+			e.printStackTrace();
 			return status;
 		}
 		return status;
