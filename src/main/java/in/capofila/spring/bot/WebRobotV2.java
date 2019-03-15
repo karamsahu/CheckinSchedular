@@ -7,6 +7,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
 import in.capofila.spring.commons.CheckinConsts;
+import in.capofila.spring.commons.SchedulerUtils;
 import in.capofila.spring.model.CheckinDetails;
 
 public class WebRobotV2 {
@@ -23,11 +24,11 @@ public class WebRobotV2 {
 	}
 	
 	// browser simulation
-	public static CheckinDetails doCheckIn(CheckinDetails details) {
+	public static synchronized CheckinDetails doCheckIn(CheckinDetails details) {
 		logger.info("Initializing websimulator..");
 //		String chromeDriverPath = "C:\\Users\\Karam\\Documents\\driver\\chromedriver.exe";
-		String chromeDriverPath = "C:\\Users\\karamsahu\\Documents\\chromedriver.exe";//"/var/lib/chromedriver";
-		
+		String chromeDriverPath = SchedulerUtils.getDriverPath();//"C:\\Users\\Karam\\Documents\\driver\\chromedriver.exe";//"/var/lib/chromedriver";
+		logger.info("loading driver from "+chromeDriverPath);
 		System.setProperty("webdriver.chrome.driver", chromeDriverPath);
 		ChromeOptions options = new ChromeOptions();
 		//options.addArguments("--headless", "--disable-gpu", "--window-size=1920,1200", "--ignore-certificate-errors");

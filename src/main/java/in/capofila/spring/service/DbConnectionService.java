@@ -14,6 +14,7 @@ import java.util.TimeZone;
 
 import org.apache.log4j.Logger;
 
+import in.capofila.spring.commons.SchedulerUtils;
 import in.capofila.spring.model.CheckinDetails;
 
 public class DbConnectionService {
@@ -28,10 +29,9 @@ public class DbConnectionService {
 		try {
 			if (conn == null || conn.isClosed()) {
 				Class.forName("org.sqlite.JDBC");
-				String path =  "/var/lib/tomcat8/webapps/CheckinScheduler/resources";//System.getenv("CATALINA_HOME");
-				path = ".";
-				logger.info("databse path is"+path);
-				conn = DriverManager.getConnection("jdbc:sqlite:"+path+"/scheduler.db");// DbConnectionService.class.getResource("/").getPath()
+				String dbPath = SchedulerUtils.getDbPath();
+				logger.info("Loading databse from location "+dbPath);
+				conn = DriverManager.getConnection("jdbc:sqlite:"+dbPath+"/scheduler.db");// DbConnectionService.class.getResource("/").getPath()
 																			// + "/application.db");
 				
 				String dbScemaSql = "BEGIN TRANSACTION;\r\n" + "CREATE TABLE IF NOT EXISTS `checkin_details` (\r\n"

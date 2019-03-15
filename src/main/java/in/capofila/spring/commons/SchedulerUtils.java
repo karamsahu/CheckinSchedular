@@ -1,16 +1,20 @@
 package in.capofila.spring.commons;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.Month;
 import java.time.format.TextStyle;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Properties;
+
+import org.apache.log4j.Logger;
 
 import in.capofila.spring.model.CheckinDetails;
 
 public class SchedulerUtils {
-	public SchedulerUtils() {
-		// TODO Auto-generated constructor stub
-	}
+	public static final Logger logger = Logger.getLogger(SchedulerUtils.class);
+	
 	public static String emailFormatter(CheckinDetails details) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<html><body><table style='border:1px solid black'>");
@@ -190,5 +194,54 @@ public class SchedulerUtils {
 		String s = Month.of(monthNumber).getDisplayName(TextStyle.SHORT , Locale.US ).toUpperCase();
 		return s;
 	}
+
+	private static  synchronized Properties getApplciationProperties(){
+			InputStream input = SchedulerUtils.class.getClassLoader().getResourceAsStream("app.properties");
+			Properties prop = new Properties();
+	    	try {
+				prop.load(input);
+			} catch (IOException e) {
+				logger.error("Error occured while loading applciaiton properties file caused by "+e.getMessage());
+			}
+			return prop;
+	}
+		
 	
+	public static String getDriverPath(){
+		Properties prop = getApplciationProperties();
+		
+		if(prop.containsKey("driver.path")) {
+			if(prop.getProperty("driver.path").isEmpty()) {
+				logger.error("Please provide driver location in the applciation properties file.");
+			}
+			return prop.getProperty("driver.path");
+		}else {
+			logger.error("Invalid driver property key name. Use driver.path as key");
+		}
+        return "";
+
+	}
+	
+	public static String getDbPath(){
+		Properties prop = getApplciationProperties();
+		
+		if(prop.containsKey("db.path")) {
+			if(prop.getProperty("db.path").isEmpty()) {
+				logger.error("Please provide db location in the applciation properties file.");
+			}
+			return prop.getProperty("db.path");
+		}else {
+			logger.error("Invalid db property key name. Use db.path as key");
+		}
+        return "";
+
+	}
+	
+	public static void main(String[] args) {
+		System.out.println(getDbPath()+getDriverPath());
+    	 
+        //get the property value and print it out
+		
+	}
 }
+
